@@ -26,23 +26,18 @@ import static com.test.R.*;
 public class MainActivity extends AppCompatActivity {
     public static final String T = "sanbo";
 
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_main);
-//        PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
-
-
+        /**
+         * 获取电源信息
+         */
         getBattery();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        //API大于21的时候获取电源信息
+        //getBatteryManagerByLargeThan21();
+
     }
 
 
@@ -66,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**************************************************************************************
-     * ******************************** 电源相关的 ******************************************
+     * ****************************** 电源相关的,不需要任何权限 *******************************
      **************************************************************************************/
 
     protected static final int MSG_REFRESH_UI = 0x999;
