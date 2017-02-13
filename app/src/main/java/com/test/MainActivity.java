@@ -31,12 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_main);
-        /**
-         * 获取电源信息
-         */
-        getBattery();
-        //API大于21的时候获取电源信息
-        //getBatteryManagerByLargeThan21();
+
 
     }
 
@@ -45,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
         int id = v.getId();
         switch (id) {
             case R.id.btn1:
-                Log.d(T, "A");
+                /**
+                 * 获取电源信息
+                 */
+                getBattery();
+                //API大于21的时候获取电源信息
+                //getBatteryManagerByLargeThan21();
                 break;
             case R.id.btn2:
                 Log.d(T, "B");
@@ -144,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
                         acString = "plugged usb";
                         break;
                 }
-                String s = "";
-                s = "状态:" + statusString + "\n"
+                String s = "状态:" + statusString + "\n"
                         + "健康:" + healthString + "\n"
                         + "是否存在电池:" + String.valueOf(present) + "\n"
                         + "获得当前电量:" + String.valueOf(level) + "\n"
@@ -155,14 +154,27 @@ public class MainActivity extends AppCompatActivity {
                         + "电压:" + String.valueOf(voltage) + "\n"
                         + "温度:" + String.valueOf(temperature) + "\n"
                         + "电池类型:" + technology + "\n";
-                Message msg = new Message();
-                msg.what = MSG_REFRESH_UI;
-                msg.obj = s;
-                mhHandler.sendMessage(msg);
+                showMessage(s);
             }
         }
     };
-    Handler mhHandler = new Handler() {
+
+    /**
+     * 告诉UI需要展示信息
+     *
+     * @param s
+     */
+    private void showMessage(String s) {
+        Message msg = new Message();
+        msg.what = MSG_REFRESH_UI;
+        msg.obj = s;
+        mhHandler.sendMessage(msg);
+    }
+
+    /**
+     * UI展示信息
+     */
+    private Handler mhHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
