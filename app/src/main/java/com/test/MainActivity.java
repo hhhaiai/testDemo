@@ -7,31 +7,38 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.telephony.CellLocation;
-import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
-import static com.test.R.*;
+import static com.test.R.id;
+import static com.test.R.layout;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -69,8 +76,16 @@ public class MainActivity extends AppCompatActivity {
                 getSIMInfo();
                 break;
             case R.id.btn4:
+                /**
+                 * 定位信息
+                 */
+                getlocation();
                 break;
             case R.id.btn5:
+                /**
+                 * 安装软件信息
+                 */
+                getAppList();
                 break;
             case R.id.btn6:
                 break;
@@ -80,6 +95,112 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /**************************************************************************************
+     * ************************************ 安装软件列表 ************************************
+     **************************************************************************************/
+    private void getAppList() {
+        PackageManager pm = this.getPackageManager();
+        //和tag PackageManager.GET_UNINSTALLED_PACKAGES功能一样
+        List<PackageInfo> pakageinfos = pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
+//        List<PackageInfo> pakageinfos = pm.getInstalledPackages(0);
+        StringBuilder sb = new StringBuilder();
+        for (PackageInfo packageInfo : pakageinfos) {
+            // 获取应用程序的名称，不是包名，而是清单文件中的labelname
+            String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
+            String packageName = packageInfo.packageName;
+            //给一同程序设置包名
+            sb.append(appName).append(":").append(packageName).append("\n");
+        }
+        String result = sb.toString().trim();
+        if (TextUtils.isEmpty(result)) {
+            result = "获取失败";
+        }
+        showMessage(result);
+    }
+
+    /**************************************************************************************
+     * ********************************** 定位信息,需要部分权限 ******************************
+     **************************************************************************************/
+    private void getlocation() {
+        /**
+         * http://blog.csdn.net/jiangwei0910410003/article/details/52836241
+         第一、卫星定位
+         GPS（Global Positioning System）即全球定位系统，是由美国建立的一个卫星导航定位系统，利用该系统，
+         用户可以在全球范围内实现全天候、连续、实时的三维导航定位和测速；另外，利用该系统，用户还能够进行高精度的时间传递和高精度的精密定位。
+
+         第二、基站定位
+         移动电话测量不同基站的下行导频信号，得到不同基站下行导频的TOA（到达时刻）或 TDOA(到达时间差)，
+         根据该测量结果并结合基站的坐标，一般采用三角公式估计算法，就能够计算出移动电话的位置。
+         实际的位置估计算法需要考虑多基站(3个或3个以上)定位的情况，因此算法要复杂很多。
+         一般而言，移动台测量的基站数目越多，测量精度越高，定位性能改善越明显。
+
+         第三、WiFi定位
+         每一个无线AP（路由器）都有一个全球唯一的MAC地址，并且一般来说无线AP在一段时间内不会移动；
+         设备在开启Wi-Fi的情况下，无线路由器默认都会进行SSID广播（除非用户手动配置关闭该功能），
+         在广播帧包含了该路由器的MAC地址；采集装置可以通过接收周围AP发送的广播信息获取周围AP的MAC信息和信号强度信息，
+         将这些信息上传到服务器，经过服务器的计算，保存为“MAC-经纬度”的映射，当采集的信息足够多时候就在服务器上建立了一张巨大的WiFi信息网络；
+         当一个设备处在这样的网络中时，可以将收集到的这些能够标示AP的数据发送到位置服务器，服务器检索出每一个AP的地理位置，
+         并结合每个信号的强弱程度，计算出设备的地理位置并返回到用户设备，其计算方式和基站定位位置计算方式相似，
+         也是利用三点定位或多点定位技术；位置服务商要不断更新、补充自己的数据库，以保证数据的准确性。
+         当某些WiFi信息不在数据库中时，可以根据附近其他的WiFi位置信息推断出未知WiFi的位置信息，并上传服务器。
+
+         第四、AGPS定位
+         AGPS（AssistedGPS：辅助全球卫星定位系统）是结合GSM/GPRS与传统卫星定位，利用基地台代送辅助卫星信息，
+         以缩减GPS芯片获取卫星信号的延迟时间，受遮盖的室内也能借基地台讯号弥补，减轻GPS芯片对卫星的依赖度。AGPS利用手机基站的信号，
+         辅以连接远程定位服务器的方式下载卫星星历 (英语：Almanac Data)，再配合传统的GPS卫星接受器，让定位的速度更快。
+         是一种结合网络基站信息和GPS信息对移动台进行定位的技术，既利用全球卫星定位系统GPS，又利用移动基站，解决了GPS覆盖的问题，
+         可以在2代的G、C网络和3G网络中使用。
+
+         在Android中关于这几种定位都有具体的调用方法，所以如果想修改系统的定位信息，那么就必须先了解这几种调用方式，
+         在之前的一篇文章中也说到了，Hook的最关键一点就是需要找到Hook的地方，这个就需要去阅读源码来查找了。
+         在Android中一般获取位置信息就涉及到下面的几个类和方法：
+         */
+
+        /**
+         *第一个：采用基站定位信息
+         android.telephony.TelephonyManager
+         +getCellLocation
+         +getPhoneCount
+         +getNeighboringCellInfo
+         +getAllCellInfo
+         android.telephony.PhoneStateListener
+         +onCellLocationChanged
+         +onCellInfoChanged
+         */
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        /**
+         * 第二个：采用Wifi定位信息
+         android.net.wifi.WifiManager
+         +getScanResults
+         +getWifiState
+         +isWifiEnabled
+         android.net.wifi.WifiInfo
+         +getMacAddress
+         +getSSID
+         +getBSSID
+         android.net.NetworkInfo
+         +getTypeName
+         +isConnectedOrConnecting
+         +isConnected
+         +isAvailable
+         android.telephony.CellInfo
+         +isRegistered
+         */
+
+        /**
+         * 第三个：采用GPS定位
+         android.location.LocationManager
+         +getGpsStatus
+         +getLastLocation
+         +getLastKnownLocation
+         +getProviders
+         +getBestProvider
+         +addGpsStatusListener
+         +addNmeaListener
+         */
     }
 
     /**************************************************************************************
