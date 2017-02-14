@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             cellLoc = loc.toString();
         }
         //device id
-        String imei ="unknow";
+        String imei = "unknow";
         if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             imei = tm.getDeviceId();
         }
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             softwareVersion = tm.getDeviceSoftwareVersion();
         }
         //手机号获取
-        String lineNum= "unknow";
+        String lineNum = "unknow";
         if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             lineNum = tm.getLine1Number();
         }
@@ -219,11 +219,80 @@ public class MainActivity extends AppCompatActivity {
         //(当前已注册的用户)的名字
         String networkOperatorName = tm.getNetworkOperatorName();
         //当前使用的网络类型
-        int networkType = tm.getNetworkType();
+        String networkType = "unknow";
+
+        switch (tm.getNetworkType()) {
+            case TelephonyManager.NETWORK_TYPE_1xRTT:
+                networkType = "network_type_1xrtt";
+                break;
+            case TelephonyManager.NETWORK_TYPE_CDMA:
+                networkType = "network_type_cdma";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EDGE:
+                networkType = "network_type_edge";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EHRPD:
+                networkType = "network_type_ehrpd";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                networkType = "network_type_evdo_0";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                networkType = "network_type_evdo_a";
+                break;
+            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                networkType = "network_type_evdo_b";
+                break;
+            case TelephonyManager.NETWORK_TYPE_GPRS:
+                networkType = "network_type_gprs";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSDPA:
+                networkType = "network_type_hsdpa";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSPA:
+                networkType = "network_type_hspa";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSPAP:
+                networkType = "network_type_hspap";
+                break;
+            case TelephonyManager.NETWORK_TYPE_HSUPA:
+                networkType = "network_type_hsupa";
+                break;
+            case TelephonyManager.NETWORK_TYPE_IDEN:
+                networkType = "network_type_iden";
+                break;
+            case TelephonyManager.NETWORK_TYPE_LTE:
+                networkType = "network_type_lte";
+                break;
+            case TelephonyManager.NETWORK_TYPE_UMTS:
+                networkType = "network_type_umts";
+                break;
+            case TelephonyManager.NETWORK_TYPE_UNKNOWN:
+                networkType = "network_type_unknown";
+                break;
+            default:
+                break;
+        }
         //手机类型
-        int phoneType = tm.getPhoneType();
+        String phoneType = "unknow";
+        switch (tm.getPhoneType()) {
+            case TelephonyManager.PHONE_TYPE_NONE:
+                phoneType = "phone_type_none";
+                break;
+            case TelephonyManager.PHONE_TYPE_GSM:
+                phoneType = "phone_type_gsm";
+                break;
+            case TelephonyManager.PHONE_TYPE_CDMA:
+                phoneType = "phone_type_cdma";
+                break;
+            case TelephonyManager.PHONE_TYPE_SIP:
+                phoneType = "phone_type_sip";
+                break;
+            default:
+                break;
+        }
         //语音邮件号码
-        String VoiceMailNumber ="unknow";
+        String VoiceMailNumber = "unknow";
         if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             VoiceMailNumber = tm.getVoiceMailNumber();
         }
@@ -234,10 +303,46 @@ public class MainActivity extends AppCompatActivity {
         if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             isNetworkRoaming = tm.isNetworkRoaming();
         }
+
         //数据活动状态
-        int dataActivity = tm.getDataActivity();
+        String dataActivity = "unknow";
+        switch (tm.getDataActivity()) {
+            case TelephonyManager.DATA_ACTIVITY_NONE:
+                phoneType = "data_activity_none";
+                break;
+            case TelephonyManager.DATA_ACTIVITY_IN:
+                phoneType = "data_activity_in";
+                break;
+            case TelephonyManager.DATA_ACTIVITY_OUT:
+                phoneType = "data_activity_out";
+                break;
+            case TelephonyManager.DATA_ACTIVITY_INOUT:
+                phoneType = "data_activity_inout";
+                break;
+            case TelephonyManager.DATA_ACTIVITY_DORMANT:
+                phoneType = "data_activity_dormant";
+                break;
+            default:
+                break;
+        }
         //数据连接状态
-        int dataState = tm.getDataState();
+        String dataState = "unknow";
+        switch (tm.getDataState()) {
+            case TelephonyManager.DATA_DISCONNECTED:
+                phoneType = "data_disconnected";
+                break;
+            case TelephonyManager.DATA_CONNECTING:
+                phoneType = "data_connecting";
+                break;
+            case TelephonyManager.DATA_CONNECTED:
+                phoneType = "data_connected";
+                break;
+            case TelephonyManager.DATA_SUSPENDED:
+                phoneType = "data_suspended";
+                break;
+            default:
+                break;
+        }
         String s = "================SIM卡相关信息=================="
                 + "\nSIM状态:" + simState
                 + "\nSIM国家码:" + simCountryIso
@@ -263,8 +368,7 @@ public class MainActivity extends AppCompatActivity {
                 + "\nICC卡是否存在:" + hasIccCard
                 + "\n是否漫游:" + isNetworkRoaming
                 + "\n数据活动状态:" + dataActivity
-                + "\n数据连接状态:" + dataState
-                ;
+                + "\n数据连接状态:" + dataState;
         showMessage(s);
 
     }
