@@ -26,7 +26,7 @@
         android:layout_alignBottom="@+id/btn1"
         android:layout_centerHorizontal="true"
         android:onClick="onClick"
-        android:text="B" />
+        android:text="蓝牙/wifi信息" />
 
     <Button
         android:id="@+id/btn3"
