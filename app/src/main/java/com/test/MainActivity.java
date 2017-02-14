@@ -1,5 +1,6 @@
 package com.test;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -159,6 +160,22 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
+    /**
+     * 获取电源相关的. api大于21才可以使用
+     */
+    @TargetApi(21)
+    public void getBatteryManagerByLargeThan21() {
+        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
+        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
+        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
+        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
+    }
+
+    /**************************************************************************************
+     * *************************** UI展示机制,外部调用showMessage即可 ***********************
+     **************************************************************************************/
+
     /**
      * 告诉UI需要展示信息
      *
@@ -185,14 +202,5 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * 获取电源相关的. api大于21才可以使用
-     */
-    public void getBatteryManagerByLargeThan21() {
-        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
-    }
 
 }
