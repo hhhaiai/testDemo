@@ -116,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
                  * 传感器 陀螺仪相关参数获取
                  */
                 break;
+            case R.id.btn8:
+                /**
+                 * 是否双卡,双卡信息获取
+                 */
+                break;
 
             default:
                 break;
