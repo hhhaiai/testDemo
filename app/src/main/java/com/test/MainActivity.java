@@ -111,6 +111,11 @@ public class MainActivity extends AppCompatActivity {
                 //getRunProcessBySystemAPI();
                 getRunProcessLargeThen5BySystemAPI();
                 break;
+            case R.id.btn7:
+                /**
+                 * 传感器 陀螺仪相关参数获取
+                 */
+                break;
 
             default:
                 break;
@@ -144,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
         }
         StringBuilder sb = new StringBuilder();
         sb.append("===========运行软件列表========");
-        for (UsageStats us: usageStats){
-            Log.d(T,"--->"+us.getPackageName());
+        for (UsageStats us : usageStats) {
+            Log.d(T, "--->" + us.getPackageName());
             sb.append("\n").append(us.getPackageName());
         }
         showMessage(sb.toString());
@@ -178,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
     /**
      * 在新版本也不稳定 不能用了
      */
