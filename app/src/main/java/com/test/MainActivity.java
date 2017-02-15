@@ -106,12 +106,17 @@ public class MainActivity extends AppCompatActivity {
         List<PackageInfo> pakageinfos = pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
 //        List<PackageInfo> pakageinfos = pm.getInstalledPackages(0);
         StringBuilder sb = new StringBuilder();
+        sb.append("*************************************************\n")
+          .append("***************** 安装软件列表 *****************\n")
+          .append("*************************************************\n");
         for (PackageInfo packageInfo : pakageinfos) {
             // 获取应用程序的名称，不是包名，而是清单文件中的labelname
             String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
             String packageName = packageInfo.packageName;
             //给一同程序设置包名
-            sb.append(appName).append(":").append(packageName).append("\n");
+            sb.append("\n").append("=====>>>").append(appName.trim()).append("<<<=====\n")
+                    .append("PackageName:  " +
+                            "").append(packageName).append("\n");
         }
         String result = sb.toString().trim();
         if (TextUtils.isEmpty(result)) {
