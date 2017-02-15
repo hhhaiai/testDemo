@@ -2,6 +2,10 @@ package com.test;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
@@ -27,6 +32,7 @@ import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.test.utils.AppUtils;
 import com.test.utils.QueuedWork;
@@ -39,6 +45,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -99,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 运行进程列表
                  */
-                getRunProcessByRuntime();
+                //getRunProcessByRuntime();
+                //getRunProcessBySystemAPI();
+                getRunProcessLargeThen5BySystemAPI();
                 break;
 
             default:
@@ -109,9 +119,83 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     /**************************************************************************************
      * ************************************ 运行软件列表 ************************************
      **************************************************************************************/
+
+    /**
+     * 1. 此方法只在android5.0以上有效
+     * 2. AndroidManifest中加入此权限<uses-permission xmlns:tools="http://schemas.android.com/tools" android:name="android.permission.PACKAGE_USAGE_STATS"
+     * tools:ignore="ProtectedPermissions" />
+     * 3. 打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾
+     */
+    private void getRunProcessLargeThen5BySystemAPI() {
+        long ts = System.currentTimeMillis();
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getSystemService("usagestats");
+        List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, ts - 1000 * 10, ts);
+        if (usageStats == null || usageStats.size() == 0) {
+            if (HavaPermissionForTest(this) == false) {
+                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                Toast.makeText(this, "权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_SHORT).show();
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("===========运行软件列表========");
+        for (UsageStats us: usageStats){
+            Log.d(T,"--->"+us.getPackageName());
+            sb.append("\n").append(us.getPackageName());
+        }
+        showMessage(sb.toString());
+//        class RecentUseComparator implements Comparator<UsageStats> {
+//            @Override
+//            public int compare(UsageStats lhs, UsageStats rhs) {
+//                return (lhs.getLastTimeUsed() > rhs.getLastTimeUsed()) ? -1 : (lhs.getLastTimeUsed() == rhs.getLastTimeUsed()) ? 0 : 1;
+//            }
+//        }
+//        RecentUseComparator mRecentComp = new RecentUseComparator();
+//        Collections.sort(usageStats, mRecentComp);
+//        String currentTopPackage = usageStats.get(0).getPackageName();
+//        Log.d(T,"currentTopPackage:"+currentTopPackage);
+    }
+
+    /**
+     * 判断是否有用权限
+     *
+     * @param context 上下文参数
+     */
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private static boolean HavaPermissionForTest(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
+            return (mode == AppOpsManager.MODE_ALLOWED);
+        } catch (PackageManager.NameNotFoundException e) {
+            return true;
+        }
+    }
+    /**
+     * 在新版本也不稳定 不能用了
+     */
+    private void getRunProcessBySystemAPI() {
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.AppTask> ats = am.getAppTasks();
+        for (ActivityManager.AppTask at : ats) {
+            Log.e(T, at.getTaskInfo().baseActivity.toString());
+        }
+        List<ActivityManager.RunningAppProcessInfo> rps = am.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo rp : rps) {
+            Log.d(T, "getRunningAppProcesses===>" + rp.processName);
+        }
+        List<ActivityManager.RunningServiceInfo> rss = am.getRunningServices(0);
+        for (ActivityManager.RunningServiceInfo rs : rss) {
+            Log.d(T, "getRunningServices===>" + rs.process);
+        }
+    }
 
     /**
      * 这种方法不好用
