@@ -28,6 +28,14 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.test.utils.AppUtils;
+import com.test.utils.QueuedWork;
+import com.test.utils.SafeRunnable;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
@@ -88,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                 getAppList();
                 break;
             case R.id.btn6:
+                /**
+                 * 运行进程列表
+                 */
+                getRunProcessByRuntime();
                 break;
 
             default:
@@ -95,6 +107,65 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /**************************************************************************************
+     * ************************************ 运行软件列表 ************************************
+     **************************************************************************************/
+
+    /**
+     * 这种方法不好用
+     */
+    private void getRunProcessByRuntime() {
+        for (int i = 0; i < 10000; i++) {
+            QueuedWork.execute(new SafeRunnable() {
+                public void safeRun() {
+                    try {
+                        Thread.sleep(2 * 1000);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    runPS();
+                }
+            });
+        }
+    }
+
+    private void runPS() {
+        try {
+            Process proc = Runtime.getRuntime().exec("ps");
+            showMessage(convertStreamToString(proc.getInputStream()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String convertStreamToString(InputStream is) {
+        /*
+          * To convert the InputStream to String we use the BufferedReader.readLine()
+          * method. We iterate until the BufferedReader return null which means
+          * there's no more data to read. Each line will appended to a StringBuilder
+          * and returned as String.
+          */
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return sb.toString();
     }
 
     /**************************************************************************************
@@ -107,8 +178,8 @@ public class MainActivity extends AppCompatActivity {
 //        List<PackageInfo> pakageinfos = pm.getInstalledPackages(0);
         StringBuilder sb = new StringBuilder();
         sb.append("*************************************************\n")
-          .append("***************** 安装软件列表 *****************\n")
-          .append("*************************************************\n");
+                .append("***************** 安装软件列表 *****************\n")
+                .append("*************************************************\n");
         for (PackageInfo packageInfo : pakageinfos) {
             // 获取应用程序的名称，不是包名，而是清单文件中的labelname
             String appName = packageInfo.applicationInfo.loadLabel(pm).toString();

@@ -1,8 +1,9 @@
-package com.test;
+package com.test.utils;
 
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
+import android.util.Log;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -36,6 +37,7 @@ public class AppUtils {
                     Instrumentation.ActivityMonitor activityMonitor = mActivityMonitors.get(i);
                     //获取Activity名称
                     activityMonitor.getLastActivity().getClass().getName();
+                    Log.d("sanbo","AppUtils getNowActivity "+activityMonitor.getLastActivity().getClass().getName());
                 }
             }
         } catch (Exception e) {
