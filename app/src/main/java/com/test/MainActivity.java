@@ -121,6 +121,16 @@ public class MainActivity extends AppCompatActivity {
                  * 是否双卡,双卡信息获取
                  */
                 break;
+            case R.id.btn9:
+                /**
+                 * 相机参数
+                 */
+                break;
+            case R.id.btn10:
+                /**
+                 * 分辨率信息
+                 */
+                break;
 
             default:
                 break;
