@@ -16,6 +16,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Camera;
+import android.location.Criteria;
+import android.location.GnssStatus;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -27,7 +34,10 @@ import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.CellInfo;
 import android.telephony.CellLocation;
+import android.telephony.NeighboringCellInfo;
+import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -428,6 +438,8 @@ public class MainActivity extends AppCompatActivity {
     /**************************************************************************************
      * ********************************** 定位信息,需要部分权限 ******************************
      **************************************************************************************/
+    StringBuilder sb = null;
+
     private void getlocation() {
         /**
          * http://blog.csdn.net/jiangwei0910410003/article/details/52836241
@@ -462,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
          在之前的一篇文章中也说到了，Hook的最关键一点就是需要找到Hook的地方，这个就需要去阅读源码来查找了。
          在Android中一般获取位置信息就涉及到下面的几个类和方法：
          */
+        sb = new StringBuilder();
 
         /**
          *第一个：采用基站定位信息
@@ -474,7 +487,83 @@ public class MainActivity extends AppCompatActivity {
          +onCellLocationChanged
          +onCellInfoChanged
          */
+        sb.append("=============采用基站定位信息=========").append("\n");
         TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+        /**
+         *  当前设备位置。 需要权限
+         *  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+         *  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+         */
+        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            CellLocation c = tm.getCellLocation();
+            sb.append("设备的当前位置: ").append(String.valueOf(c)).append("\n");
+        }
+
+        /**
+         * 单双卡模式判断，6.0后api支持
+         */
+        if (Build.VERSION.SDK_INT > 22) {
+            sb.append("手机支持数量[6.0以上api]: ");
+            switch (tm.getPhoneCount()) {
+                case 0:
+                    sb.append("不支持语音／短信和数据");
+                    break;
+                case 1:
+                    sb.append("单待机模式(单sim卡功能)");
+                    break;
+                case 2:
+                    sb.append("双待机模式");
+                    break;
+                default:
+                    break;
+            }
+            sb.append("\n");
+        }
+        /**
+         * 设备的邻居单元信息。需要权限 貌似新版本不好用
+         * <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
+         */
+        if (checkPermission(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+            Log.e(T, "申请了权限");
+            List<NeighboringCellInfo> ncs = tm.getNeighboringCellInfo();
+            Log.e(T, "附近设备单元信息－－－》" + ncs.size());
+            sb.append("--------------设备附近的单元信息[").append(ncs.size()).append("]--------------\n").append(ncs.toString()).append("\n");
+        } else {
+            Log.e(T, "没有权限");
+        }
+
+        /**
+         * 需要权限。
+         * <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+         */
+        if (Build.VERSION.SDK_INT > 16) {
+            if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                List<CellInfo> cis = tm.getAllCellInfo();
+                sb.append("--------------主小区和附近小区信息[").append(cis.size()).append("]--------------\n").append(cis.toString()).append("\n");
+            }
+        }
+
+        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            tm.listen(new PhoneStateListener() {
+                @Override
+                public void onCellInfoChanged(List<CellInfo> cellInfo) {
+                    super.onCellInfoChanged(cellInfo);
+                    sb.append("--------------PhoneStateListener------------\n")
+                            .append("onCellInfoChanged======>")
+                            .append(cellInfo.toString()).append("\n");
+                }
+
+                @Override
+                public void onCellLocationChanged(CellLocation location) {
+                    super.onCellLocationChanged(location);
+                    sb.append("--------------PhoneStateListener------------\n")
+                            .append("onCellLocationChanged======>")
+                            .append(location.toString()).append("\n");
+                }
+            }, PhoneStateListener.LISTEN_CELL_LOCATION);
+        }
 
         /**
          * 第二个：采用Wifi定位信息
@@ -494,23 +583,134 @@ public class MainActivity extends AppCompatActivity {
          android.telephony.CellInfo
          +isRegistered
          */
+        sb.append("=============WIFI定位信息=========").append("\n");
+        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        /**
+         * 获取扫描到的wifi列表
+         * 需要权限
+         *     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+         *     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+         */
+        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            List<ScanResult> srs = wm.getScanResults();
+            sb.append("wifi列表：").append(srs.toString()).append("\n");
+        }
+
+        sb.append("是否打开Wi-Fi：").append(wm.isWifiEnabled()).append("\n");
+        sb.append("Wi-Fi状态：");
+        switch (wm.getWifiState()) {
+            case WifiManager.WIFI_STATE_DISABLED:
+                sb.append("wifi_state_disabled");
+                break;
+            case WifiManager.WIFI_STATE_DISABLING:
+                sb.append("wifi_state_disabling");
+                break;
+            case WifiManager.WIFI_STATE_ENABLED:
+                sb.append("wifi_state_enabled");
+                break;
+            case WifiManager.WIFI_STATE_ENABLING:
+                sb.append("wifi_state_enabling");
+                break;
+            case WifiManager.WIFI_STATE_UNKNOWN:
+                sb.append("wifi_state_unknown");
+                break;
+            default:
+                sb.append("未知状态");
+                break;
+
+        }
+        sb.append("\n");
+        if (Build.VERSION.SDK_INT > 20) {
+            sb.append("是否支持5gWi-Fi：").append(wm.is5GHzBandSupported()).append("\n");
+        }
+        WifiInfo wifiInfo = wm.getConnectionInfo();
+        //连接wifi的地址
+        String bssid = wifiInfo.getBSSID();
+        //连接wifi名字
+        String ssid = wifiInfo.getSSID();
+        //mac地址
+        String macAddr = wifiInfo.getMacAddress();
+        sb.append("连接wifi的地址:").append(bssid).append("\n");
+        sb.append("连接wifi名字:").append(ssid).append("\n");
+        sb.append("mac地址").append(macAddr).append("\n");
+
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            if (checkPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                sb.append("网络连接类型:").append(ni.getTypeName()).append("\n");
+                sb.append("是否网络连接中:").append(ni.isConnectedOrConnecting()).append("\n");
+                sb.append("已经连接网络:").append(ni.isConnected()).append("\n");
+                sb.append("是否可以连接网络:").append(ni.isAvailable()).append("\n");
+            }
+
+        }
 
         /**
          * 第三个：采用GPS定位
          android.location.LocationManager
          +getGpsStatus
-         +getLastLocation
+         +getLastLocation 貌似已经废弃
          +getLastKnownLocation
          +getProviders
          +getBestProvider
-         +addGpsStatusListener
+         +addGpsStatusListener 替换方法registerGnssStatusCallback
          +addNmeaListener
          */
+        sb.append("=============GPS定位信息=========").append("\n");
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            //检索有关GPS引擎当前状态的信息。
+            GpsStatus gs = lm.getGpsStatus(null);
+            sb.append("GPS引擎当前状态:").append(gs.toString()).append("\n");
+        }
+        /**
+         * 最后位置
+         */
+        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            try {
+                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (location != null) {
+                    sb.append("最后位置经度:").append(location.getLatitude()).append("\n");
+                    sb.append("最后位置纬度:").append(location.getLongitude()).append("\n");
+                    sb.append("最后位置海拔:").append(location.getAltitude()).append("\n");
+                    sb.append("最后速度(米/秒):").append(location.getSpeed()).append("\n");
+                    sb.append("最后时间(1970.1.1到现在的毫秒):").append(location.getTime()).append("\n");
+                    sb.append("最后Accuracy:").append(location.getAccuracy()).append("\n");
+                    sb.append("最后Bearing:").append(location.getBearing()).append("\n");
+                }
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+        List<String> ss = lm.getProviders(true);
+        sb.append("附近名称列表:").append(ss.toString()).append("\n");
+//        lm.getBestProvider(Criteria.ACCURACY_HIGH,false);
+        if (checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            lm.addGpsStatusListener(new GpsStatus.Listener() {
+                @Override
+                public void onGpsStatusChanged(int event) {
+                    sb.append("GpsStatus.Listener onGpsStatusChanged:").append(event).append("\n");
+                }
+            });
+            lm.addNmeaListener(new GpsStatus.NmeaListener() {
+
+                @Override
+                public void onNmeaReceived(long timestamp, String nmea) {
+                    sb.append("---------GpsStatus.NmeaListener onNmeaReceived---------\n")
+                            .append("timestamp:").append(timestamp).append("\n")
+                            .append("nmea:").append(nmea).append("\n");
+                }
+            });
+        }
+
+        showMessage(sb.toString());
     }
 
     /**************************************************************************************
      * ******************************* SIM卡相关信息获取,需要部分权限 ***************************
      **************************************************************************************/
+
     private void getSIMInfo() {
         /**
          * 需要权限 android.permission.READ_PHONE_STATE
@@ -616,27 +816,31 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 当前移动终端附近移动终端的信息 需要权限android.permission.ACCESS_COARSE_LOCATION
          */
-//        StringBuilder sb = new StringBuilder();
-//        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-//            List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
-//            for (NeighboringCellInfo info : infos) {
-//                // 获取小区号
-//                int cid = info.getCid();
-//                // 获取邻居小区LAC
-//                // LAC:
-//                // 位置区域码。为了确定移动台的位置，每个GSM/PLMN的覆盖区都被划分成许多位置区，LAC则用于标识不同的位置区。
-//                int lac = info.getLac();
-//                int networkType = info.getNetworkType();
-//                int mPsc = info.getPsc();
-//                // 获取邻居小区信号强度
-//                int rssi = info.getRssi();
-//                sb.append("小区号:").append(cid)
-//                        .append(";LAC:").append(lac)
-//                        .append(";networkType:").append(networkType)
-//                        .append(";mPsc:").append(mPsc)
-//                        .append(";小区信号强度:").append(rssi);
-//            }
-//        }
+        StringBuilder sb = new StringBuilder();
+        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            try {
+                List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
+                for (NeighboringCellInfo info : infos) {
+                    // 获取小区号
+                    int cid = info.getCid();
+                    // 获取邻居小区LAC
+                    // LAC:
+                    // 位置区域码。为了确定移动台的位置，每个GSM/PLMN的覆盖区都被划分成许多位置区，LAC则用于标识不同的位置区。
+                    int lac = info.getLac();
+                    int networkType = info.getNetworkType();
+                    int mPsc = info.getPsc();
+                    // 获取邻居小区信号强度
+                    int rssi = info.getRssi();
+                    sb.append("小区号:").append(cid)
+                            .append(";LAC:").append(lac)
+                            .append(";networkType:").append(networkType)
+                            .append(";mPsc:").append(mPsc)
+                            .append(";小区信号强度:").append(rssi);
+                }
+                sb.append("\n");
+            } catch (Throwable e) {
+            }
+        }
 
         //注册的ISO国家注册码
         String networkCountryIso = tm.getNetworkCountryIso();

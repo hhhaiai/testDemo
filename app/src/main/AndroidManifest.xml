@@ -28,7 +28,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- 位置采集 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <!-- 5.0以上获取活跃进程-->
     <uses-permission xmlns:tools="http://schemas.android.com/tools"
         android:name="android.permission.PACKAGE_USAGE_STATS"
@@ -39,4 +44,5 @@
     <!--<uses-feature android:name="android.hardware.camera.autofocus" />-->
     <uses-permission android:name="android.permission.CAMERA" />
     <!--<uses-permission android:name="android.permission.FLASHLIGHT" />-->
+
 </manifest>
