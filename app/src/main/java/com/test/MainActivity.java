@@ -46,14 +46,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import static com.test.R.id;
 import static com.test.R.layout;
@@ -260,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
      * tools:ignore="ProtectedPermissions" />
      * 3. 打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾
      */
+    @TargetApi(21)
     private void getRunProcessLargeThen5BySystemAPI() {
         long ts = System.currentTimeMillis();
         UsageStatsManager mUsageStatsManager = (UsageStatsManager) getSystemService("usagestats");
