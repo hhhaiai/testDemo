@@ -15,6 +15,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -28,9 +29,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -128,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 分辨率信息
                  */
+                getDisPlayInfo();
                 break;
 
             default:
@@ -137,12 +142,53 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**************************************************************************************
+     * ************************************ 获取分辨率信息 ************************************
+     **************************************************************************************/
+
+    /**
+     * 获取分辨率信息
+     */
+    private void getDisPlayInfo() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("========").append("WindowManager.getDefaultDisplay().getMetrics(DisplayMetrics)获取").append("=======\n");
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        sb.append("heightPixels:").append(dm.heightPixels).append("\n");
+        sb.append("widthPixels:").append(dm.widthPixels).append("\n");
+        sb.append("density:").append(dm.density).append("\n");
+        sb.append("densityDpi:").append(dm.densityDpi).append("\n");
+        sb.append("scaledDensity:").append(dm.scaledDensity).append("\n");
+        sb.append("xdpi:").append(dm.xdpi).append("\n");
+        sb.append("ydpi:").append(dm.ydpi).append("\n");
+        sb.append("========").append("Display获取的分辨率").append("=======\n");
+        Display display = getWindowManager().getDefaultDisplay();
+        sb.append("Width:").append(display.getWidth()).append("\n");
+        sb.append("Height:").append(display.getHeight()).append("\n");
+        sb.append("Rotation:").append(display.getRotation()).append("\n");
+        sb.append("Orientation:").append(display.getOrientation()).append("\n");
+        sb.append("RefreshRate:").append(display.getRefreshRate()).append("\n");
+        sb.append("========").append("通过Resources获取").append("=======\n");
+        Resources resources = this.getResources();
+        DisplayMetrics dmqq = resources.getDisplayMetrics();
+        sb.append("widthPixels:").append(dmqq.widthPixels).append("\n");
+        sb.append("heightPixels:").append(dmqq.heightPixels).append("\n");
+        sb.append("densityDpi:").append(dmqq.densityDpi).append("\n");
+        sb.append("density:").append(dmqq.density).append("\n");
+        sb.append("scaledDensity:").append(dmqq.scaledDensity).append("\n");
+        sb.append("xdpi:").append(dmqq.xdpi).append("\n");
+        sb.append("ydpi:").append(dmqq.ydpi).append("\n");
+        sb.append("DisplayMetrics:").append(dmqq.toString()).append("\n");
+
+        showMessage(sb.toString());
+    }
+
 
     /**************************************************************************************
      * ************************************ 运行软件列表 ************************************
      **************************************************************************************/
     /**
-     * 入口
+     * 运行时软件列表入口
      */
     private void getRunningProcess() {
         //getRunProcessByRuntime();
