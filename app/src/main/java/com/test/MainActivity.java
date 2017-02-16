@@ -107,9 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 运行进程列表
                  */
-                //getRunProcessByRuntime();
-                //getRunProcessBySystemAPI();
-                getRunProcessLargeThen5BySystemAPI();
+                getRunningProcess();
                 break;
             case R.id.btn7:
                 /**
@@ -143,6 +141,19 @@ public class MainActivity extends AppCompatActivity {
     /**************************************************************************************
      * ************************************ 运行软件列表 ************************************
      **************************************************************************************/
+    /**
+     * 入口
+     */
+    private void getRunningProcess() {
+        //getRunProcessByRuntime();
+        //getRunProcessBySystemAPI();
+        //getRunProcessLargeThen5BySystemAPI();
+        if (Build.VERSION.SDK_INT < 21) {
+            getRunProcessBySystemAPI();
+        } else {
+            getRunProcessLargeThen5BySystemAPI();
+        }
+    }
 
     /**
      * 1. 此方法只在android5.0以上有效
@@ -203,20 +214,38 @@ public class MainActivity extends AppCompatActivity {
      * 在新版本也不稳定 不能用了
      */
     private void getRunProcessBySystemAPI() {
-        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.AppTask> ats = am.getAppTasks();
-        for (ActivityManager.AppTask at : ats) {
-            Log.e(T, at.getTaskInfo().baseActivity.toString());
+//        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        List<ActivityManager.AppTask> ats = am.getAppTasks();
+//        for (ActivityManager.AppTask at : ats) {
+//            Log.e(T, at.getTaskInfo().baseActivity.toString());
+//        }
+//        List<ActivityManager.RunningAppProcessInfo> rps = am.getRunningAppProcesses();
+//        for (ActivityManager.RunningAppProcessInfo rp : rps) {
+//            Log.d(T, "getRunningAppProcesses===>" + rp.processName);
+//        }
+//        List<ActivityManager.RunningServiceInfo> rss = am.getRunningServices(0);
+//        for (ActivityManager.RunningServiceInfo rs : rss) {
+//            Log.d(T, "getRunningServices===>" + rs.process);
+//        }
+
+        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        //获取正在运行的应用
+        List<ActivityManager.RunningAppProcessInfo> run = am.getRunningAppProcesses();
+        //获取包管理器，在这里主要通过包名获取程序的图标和程序名
+        PackageManager pm = this.getPackageManager();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("===========运行软件列表========");
+        for (ActivityManager.RunningAppProcessInfo ra : run) {
+            //这里主要是过滤系统的应用和电话应用，当然你也可以把它注释掉。
+            if (ra.processName.equals("system")) {
+            }
+
+            sb.append("\n").append(ra.processName);
         }
-        List<ActivityManager.RunningAppProcessInfo> rps = am.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo rp : rps) {
-            Log.d(T, "getRunningAppProcesses===>" + rp.processName);
-        }
-        List<ActivityManager.RunningServiceInfo> rss = am.getRunningServices(0);
-        for (ActivityManager.RunningServiceInfo rs : rss) {
-            Log.d(T, "getRunningServices===>" + rs.process);
-        }
+        showMessage(sb.toString());
     }
+
 
     /**
      * 这种方法不好用
