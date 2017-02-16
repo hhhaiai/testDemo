@@ -14,8 +14,8 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.hardware.Camera;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
@@ -32,13 +33,10 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.TextureView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.test.utils.AppUtils;
 import com.test.utils.QueuedWork;
 import com.test.utils.SafeRunnable;
 
@@ -127,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 相机参数
                  */
+                getCameraInfo();
                 break;
             case R.id.btn10:
                 /**
@@ -140,6 +139,60 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /**************************************************************************************
+     * ************************************ 获取相机信息 ************************************
+     **************************************************************************************/
+
+    /**
+     * 获取相机信息.需要权限
+     * <uses-permission android:name="android.permission.CAMERA"/>
+     */
+    private void getCameraInfo() {
+        try {
+            if (Build.VERSION.SDK_INT > 22) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        1);
+            }
+            StringBuilder sb = new StringBuilder();
+            int num = Camera.getNumberOfCameras();
+            sb.append("本部手机有").append(num).append("个摄像头").append(":\n");
+            for (int i = 0; i < num; i++) {
+                Camera.CameraInfo info = new Camera.CameraInfo();
+                Camera.getCameraInfo(i, info);
+                //前置摄像头
+                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                    //stopFaceDetection();
+                    sb.append("=============前置摄像头==========").append(":\n");
+                } else {
+                    sb.append("=============后置摄像头==========").append(":\n");
+                }
+
+                Camera camera = Camera.open(i);
+                Camera.Parameters param = camera.getParameters();
+                List<Camera.Size> preSizes = param.getSupportedPreviewSizes();
+                sb.append("\t").append("支持预览分辨率:").append("\n");
+                for (int j = 0; j < preSizes.size(); j++) {
+                    sb.append("\t\t").append(preSizes.get(j).width).append("*").append(preSizes.get(j).height)
+                            .append("===>")
+                            .append(preSizes.get(j).width * preSizes.get(j).height / 10000)
+                            .append("\n");
+                }
+                List<Camera.Size> picSizes = param.getSupportedPictureSizes();
+                sb.append("\t").append("支持图片分辨率:").append("\n");
+                for (int j = 0; j < picSizes.size(); j++) {
+                    sb.append("\t\t").append(picSizes.get(j).width).append("*").append(picSizes.get(j).height)
+                            .append("===>")
+                            .append(picSizes.get(j).width * picSizes.get(j).height / 10000)
+                            .append("\n");
+                }
+            }
+            showMessage(sb.toString());
+        } catch (Throwable e) {
+
+        }
     }
 
     /**************************************************************************************
