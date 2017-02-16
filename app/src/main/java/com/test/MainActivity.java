@@ -16,8 +16,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.hardware.Camera;
-import android.location.Criteria;
-import android.location.GnssStatus;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
@@ -47,6 +47,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.test.utils.CTelephoneInfo;
 import com.test.utils.QueuedWork;
 import com.test.utils.SafeRunnable;
 
@@ -120,11 +121,13 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 传感器 陀螺仪相关参数获取
                  */
+                getOtherInfo();
                 break;
             case R.id.btn8:
                 /**
                  * 是否双卡,双卡信息获取
                  */
+                getDoubelCard();
                 break;
             case R.id.btn9:
                 /**
@@ -144,6 +147,109 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    /**************************************************************************************
+     * ************************************ 传感器／重力感应等 ************************************
+     **************************************************************************************/
+
+    private void getOtherInfo() {
+        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //从系统服务中获得传感器管理器
+
+        List<Sensor> allSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        //从传感器管理器中获得全部的传感器列表
+        sb = new StringBuilder();
+        sb.append("=======＝=传感器[").append(allSensors.size()).append("]=============").append("\n");
+        for (Sensor s : allSensors) {//显示每个传感器的具体信息
+            switch (s.getType()) {
+
+                case Sensor.TYPE_ACCELEROMETER:
+                    sb.append(s.getType() + " 加速度传感器accelerometer").append("\n");
+                    break;
+                case Sensor.TYPE_AMBIENT_TEMPERATURE:
+                    sb.append(s.getType() + " 温度传感器temperature").append("\n");
+                    break;
+                case Sensor.TYPE_GRAVITY:
+                    sb.append(s.getType() + " 重力传感器gravity").append("\n");
+                    break;
+                case Sensor.TYPE_GYROSCOPE:
+                    sb.append(s.getType() + " 陀螺仪传感器gyroscope").append("\n");
+                    break;
+                case Sensor.TYPE_LIGHT:
+                    sb.append(s.getType() + " 环境光线传感器light").append("\n");
+                    break;
+                case Sensor.TYPE_LINEAR_ACCELERATION:
+                    sb.append(s.getType() + " 线性加速度传感器linear_accelerometer").append("\n");
+                    break;
+                case Sensor.TYPE_MAGNETIC_FIELD:
+                    sb.append(s.getType() + " 电磁场传感器magnetic").append("\n");
+                    break;
+                case Sensor.TYPE_ORIENTATION:
+                    sb.append(s.getType() + " 方向传感器orientation").append("\n");
+                    break;
+                case Sensor.TYPE_PRESSURE:
+                    sb.append(s.getType() + " 压力传感器pressure").append("\n");
+                    break;
+                case Sensor.TYPE_PROXIMITY:
+                    sb.append(s.getType() + " 距离传感器proximity").append("\n");
+                    break;
+                case Sensor.TYPE_RELATIVE_HUMIDITY:
+                    sb.append(s.getType() + " 湿度传感器relative_humidity").append("\n");
+                    break;
+                case Sensor.TYPE_ROTATION_VECTOR:
+                    sb.append(s.getType() + " 旋转矢量传感器rotation_vector").append("\n");
+                    break;
+                case Sensor.TYPE_TEMPERATURE:
+                    sb.append(s.getType() + " 温度传感器temperature").append("\n");
+                    break;
+                default:
+                    sb.append(s.getType() + " 未知传感器").append("\n");
+                    break;
+            }
+            sb.append("设备名称: ").append(s.getName()).append("\n")
+                    .append("设备版本: ").append(s.getVersion()).append("\n")
+                    .append("供应商: ").append(s.getVendor()).append("\n");
+        }
+        showMessage(sb.toString());
+    }
+
+    /**************************************************************************************
+     * ************************************ 双卡信息 ************************************
+     **************************************************************************************/
+    private void getDoubelCard() {
+        try {
+            CTelephoneInfo telephonyInfo = CTelephoneInfo.getInstance(this);
+            telephonyInfo.setCTelephoneInfo(this);
+            String imeiSIM1 = telephonyInfo.getImeiSIM1();
+            String imeiSIM2 = telephonyInfo.getImeiSIM2();
+            String iNumeric1 = telephonyInfo.getINumeric1();
+            String iNumeric2 = telephonyInfo.getINumeric2();
+            boolean network1 = telephonyInfo.isDataConnected1();
+            boolean network2 = telephonyInfo.isDataConnected2();
+            boolean isSIM1Ready = telephonyInfo.isSIM1Ready();
+            boolean isSIM2Ready = telephonyInfo.isSIM2Ready();
+            boolean isDualSIM = telephonyInfo.isDualSim();
+            StringBuilder sb = new StringBuilder();
+            sb.append("============双卡信息=========").append("\n");
+            if (TextUtils.equals(imeiSIM1, imeiSIM2)) {
+                sb.append("不是双卡手机").append("\n");
+            } else {
+                sb.append("imeiSIM1").append(imeiSIM2).append("\n")
+                        .append("imeiSIM2").append(imeiSIM2).append("\n")
+                        .append("iNumeric1").append(iNumeric1).append("\n")
+                        .append("iNumeric2").append(iNumeric2).append("\n")
+                        .append("network1").append(network1).append("\n")
+                        .append("network2").append(network2).append("\n")
+                        .append("isSIM1Ready").append(isSIM1Ready).append("\n")
+                        .append("isSIM2Ready").append(isSIM2Ready).append("\n")
+                        .append("isDualSIM").append(isDualSIM).append("\n");
+            }
+            showMessage(sb.toString());
+
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     /**************************************************************************************
