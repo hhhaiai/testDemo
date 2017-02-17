@@ -192,7 +192,56 @@ public class MainActivity extends AppCompatActivity {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-
+        sb.append("************************************\n")
+                .append("Settings.System获取信息\n")
+                .append("************************************\n");
+        Cursor cur = null;
+        Uri uri = Uri.parse("content://settings/system");
+        try {
+            // cur = managedQuery(uri, null, null, null, null);
+            cur = getContentResolver().query(uri, null, null, null, null);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+                }
+            }
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
+        sb.append("************************************\n")
+                .append("Settings.Secure获取信息\n")
+                .append("************************************\n");
+        try {
+            uri = Uri.parse("content://settings/secure");
+            cur = getContentResolver().query(uri, null, null, null, null);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+                }
+            }
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
+        sb.append("************************************\n")
+                .append("Settings.Global获取信息\n")
+                .append("************************************\n");
+        try {
+            uri = Uri.parse("content://settings/global");
+            cur = getContentResolver().query(uri, null, null, null, null);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+                }
+            }
+        } finally {
+            if (cur != null) {
+                cur.close();
+            }
+        }
         showMessage(sb.toString());
     }
 
@@ -201,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return
      */
+
     private static Properties getBuildProp() {
         Properties prop = new Properties();
         FileInputStream in = null;
