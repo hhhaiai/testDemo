@@ -15,6 +15,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.hardware.Camera;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
@@ -23,12 +24,14 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -52,6 +55,9 @@ import com.test.utils.QueuedWork;
 import com.test.utils.SafeRunnable;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +66,7 @@ import java.net.NetworkInterface;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import static com.test.R.id;
 import static com.test.R.layout;
@@ -141,7 +148,18 @@ public class MainActivity extends AppCompatActivity {
                  */
                 getDisPlayInfo();
                 break;
-
+            case R.id.btn11:
+                /**
+                 * 硬件信息
+                 */
+                getDeviceInfo();
+                break;
+            case R.id.btn12:
+                /**
+                 * 环境变量信息
+                 */
+                getEnvInfo();
+                break;
             default:
                 break;
         }
@@ -150,7 +168,194 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**************************************************************************************
-     * ************************************ 传感器／重力感应等 ************************************
+     * ************************************* 环境变量信息 ***********************************
+     **************************************************************************************/
+
+
+    private void getEnvInfo() {
+        sb = new StringBuilder();
+        sb.append("**************************************\n")
+                .append("******** getprop获取信息********\n")
+                .append("***************************************\n");
+        try {
+            Process proc = Runtime.getRuntime().exec("getprop");
+            sb.append(convertStreamToString(proc.getInputStream()));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        sb.append("************************************\n")
+                .append("/system/build.prop获取信息\n")
+                .append("************************************\n");
+        try {
+            Properties buildProp = getBuildProp();
+            sb.append(buildProp.toString());
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+        showMessage(sb.toString());
+    }
+
+    /**
+     * 获取系统的build.prop文件内容
+     *
+     * @return
+     */
+    private static Properties getBuildProp() {
+        Properties prop = new Properties();
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
+            prop.load(in);
+        } catch (Throwable e) {
+
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Throwable e) {
+                }
+            }
+        }
+        return prop;
+    }
+
+    /**************************************************************************************
+     * ************************************* 硬件设备信息 ***********************************
+     **************************************************************************************/
+
+    private void getDeviceInfo() {
+        sb = new StringBuilder();
+        sb.append("*******************************\n")
+                .append("******** 硬件设备信息 *********\n")
+                .append("********************************\n");
+        sb.append("Mac[Java-API获取]:").append(getMacByJavaAPI()).append("\n");
+        sb.append("Mac[系统API获取]:").append(getMacBySystemInterface(this)).append("\n");
+        sb.append("Mac[Shell获取]:").append(getMacShell()).append("\n");
+        sb.append("Android_id:").append(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)).append("\n");
+        sb.append("SerialNo:").append(getSerialNo()).append("\n");
+
+        sb.append("========Build获取信息=======").append("\n");
+        sb.append("BOARD:").append(Build.BOARD).append("\n");
+        sb.append("BOOTLOADER:").append(Build.BOOTLOADER).append("\n");
+        sb.append("BRAND:").append(Build.BRAND).append("\n");
+        sb.append("DEVICE:").append(Build.DEVICE).append("\n");
+        sb.append("DISPLAY:").append(Build.DISPLAY).append("\n");
+        sb.append("FINGERPRINT:").append(Build.FINGERPRINT).append("\n");
+        sb.append("HARDWARE:").append(Build.HARDWARE).append("\n");
+        sb.append("HOST:").append(Build.HOST).append("\n");
+        sb.append("ID:").append(Build.ID).append("\n");
+        sb.append("MANUFACTURER:").append(Build.MANUFACTURER).append("\n");
+        sb.append("MODEL:").append(Build.MODEL).append("\n");
+        sb.append("PRODUCT:").append(Build.PRODUCT).append("\n");
+        sb.append("SERIAL:").append(Build.SERIAL).append("\n");
+        if (Build.VERSION.SDK_INT > 20) {
+            sb.append("SUPPORTED_32_BIT_ABIS:").append(Build.SUPPORTED_32_BIT_ABIS).append("\n");
+            sb.append("SUPPORTED_64_BIT_ABIS:").append(Build.SUPPORTED_64_BIT_ABIS).append("\n");
+            sb.append("SUPPORTED_ABIS:").append(Build.SUPPORTED_ABIS).append("\n");
+        }
+        sb.append("TAGS:").append(Build.TAGS).append("\n");
+        sb.append("USER:").append(Build.USER).append("\n");
+        sb.append("CPU_ABI:").append(Build.CPU_ABI).append("\n");
+        sb.append("CPU_ABI2:").append(Build.CPU_ABI2).append("\n");
+        sb.append("RADIO:").append(Build.RADIO).append("\n");
+        showMessage(sb.toString());
+    }
+
+    /**
+     * 获取序列号.2.3以上版本支持
+     *
+     * @return
+     */
+    @TargetApi(9)
+    private static String getSerialNo() {
+        String serialNo = "";
+        if (android.os.Build.VERSION.SDK_INT >= 9) {
+            serialNo = android.os.Build.SERIAL;
+        }
+        return serialNo;
+    }
+
+    /**
+     * 通过系统api获取mac地址.
+     *
+     * @param context
+     * @return
+     */
+    private static String getMacBySystemInterface(Context context) {
+        try {
+            WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+            if (checkPermission(context, Manifest.permission.ACCESS_WIFI_STATE)) {
+                WifiInfo info = wifi.getConnectionInfo();
+                return info.getMacAddress();
+            } else {
+                return "";
+            }
+        } catch (Throwable e) {
+            return "";
+        }
+    }
+
+    /**
+     * 通过读取文件,获取设备mac信息
+     * </p>
+     * 不需要权限
+     *
+     * @return
+     */
+    private static String getMacShell() {
+        try {
+            String[] urls = new String[]{"/sys/class/net/wlan0/address", "/sys/class/net/eth0/address",
+                    "/sys/devices/virtual/net/wlan0/address"};
+            String mc;
+            for (int i = 0; i < urls.length; i++) {
+                try {
+                    mc = reaMac(urls[i]);
+                    if (mc != null) {
+                        return mc;
+                    }
+                } catch (Throwable e) {
+                }
+            }
+        } catch (Throwable e) {
+        }
+
+        return null;
+    }
+
+    private static String reaMac(String url) {
+        String macInfo = null;
+        try {
+            FileReader fstream = new FileReader(url);
+            BufferedReader in = null;
+            if (fstream != null) {
+                try {
+                    in = new BufferedReader(fstream, 1024);
+                    macInfo = in.readLine();
+                } finally {
+                    if (fstream != null) {
+                        try {
+                            fstream.close();
+                        } catch (Throwable e) {
+
+                        }
+                    }
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (Throwable e) {
+
+                        }
+                    }
+                }
+            }
+        } catch (Throwable e) {
+        }
+        return macInfo;
+    }
+
+    /**************************************************************************************
+     * *********************************** 传感器／重力感应等 ********************************
      **************************************************************************************/
 
     private void getOtherInfo() {
@@ -215,7 +420,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**************************************************************************************
-     * ************************************ 双卡信息 ************************************
+     * ************************************ 双卡信息 ***************************************
      **************************************************************************************/
     private void getDoubelCard() {
         try {
@@ -521,7 +726,7 @@ public class MainActivity extends AppCompatActivity {
         //和tag PackageManager.GET_UNINSTALLED_PACKAGES功能一样
         List<PackageInfo> pakageinfos = pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
 //        List<PackageInfo> pakageinfos = pm.getInstalledPackages(0);
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
         sb.append("*************************************************\n")
                 .append("***************** 安装软件列表 *****************\n")
                 .append("*************************************************\n");
@@ -646,7 +851,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT > 16) {
             if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 List<CellInfo> cis = tm.getAllCellInfo();
-                sb.append("--------------主小区和附近小区信息[").append(cis.size()).append("]--------------\n").append(cis.toString()).append("\n");
+                if (cis != null) {
+                    sb.append("--------------主小区和附近小区信息[").append(cis.size()).append("]--------------\n").append(cis.toString()).append("\n");
+                }
             }
         }
 
@@ -902,7 +1109,8 @@ public class MainActivity extends AppCompatActivity {
         String cellLoc = "获取失败";
         if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             CellLocation loc = tm.getCellLocation();
-            cellLoc = loc.toString();
+            if (loc != null)
+                cellLoc = loc.toString();
         }
         //device id
         String imei = "unknow";
@@ -927,21 +1135,23 @@ public class MainActivity extends AppCompatActivity {
             try {
                 List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
                 for (NeighboringCellInfo info : infos) {
-                    // 获取小区号
-                    int cid = info.getCid();
-                    // 获取邻居小区LAC
-                    // LAC:
-                    // 位置区域码。为了确定移动台的位置，每个GSM/PLMN的覆盖区都被划分成许多位置区，LAC则用于标识不同的位置区。
-                    int lac = info.getLac();
-                    int networkType = info.getNetworkType();
-                    int mPsc = info.getPsc();
-                    // 获取邻居小区信号强度
-                    int rssi = info.getRssi();
-                    sb.append("小区号:").append(cid)
-                            .append(";LAC:").append(lac)
-                            .append(";networkType:").append(networkType)
-                            .append(";mPsc:").append(mPsc)
-                            .append(";小区信号强度:").append(rssi);
+                    if (info != null) {
+                        // 获取小区号
+                        int cid = info.getCid();
+                        // 获取邻居小区LAC
+                        // LAC:
+                        // 位置区域码。为了确定移动台的位置，每个GSM/PLMN的覆盖区都被划分成许多位置区，LAC则用于标识不同的位置区。
+                        int lac = info.getLac();
+                        int networkType = info.getNetworkType();
+                        int mPsc = info.getPsc();
+                        // 获取邻居小区信号强度
+                        int rssi = info.getRssi();
+                        sb.append("小区号:").append(cid)
+                                .append(";LAC:").append(lac)
+                                .append(";networkType:").append(networkType)
+                                .append(";mPsc:").append(mPsc)
+                                .append(";小区信号强度:").append(rssi);
+                    }
                 }
                 sb.append("\n");
             } catch (Throwable e) {

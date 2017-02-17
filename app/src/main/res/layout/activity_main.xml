@@ -122,5 +122,25 @@
             android:layout_marginTop="29dp"
             android:onClick="onClick"
             android:text="分辨率信息" />
+
+        <Button
+            android:id="@+id/btn11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/btn10"
+            android:layout_centerHorizontal="true"
+            android:onClick="onClick"
+            android:text="其他硬件信息" />
+
+        <Button
+            android:id="@+id/btn12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/btn9"
+            android:layout_alignStart="@+id/btn9"
+            android:layout_alignTop="@+id/btn11"
+            android:onClick="onClick"
+            android:text="环境变量信息" />
+
     </RelativeLayout>
 </ScrollView>
