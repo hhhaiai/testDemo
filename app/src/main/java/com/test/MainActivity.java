@@ -77,20 +77,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(layout.activity_main);
+    protected void onCreate (Bundle savedInstanceState) {
+        super.onCreate (savedInstanceState);
+        setContentView (layout.activity_main);
     }
 
 
-    public void onClick(View v) {
-        int id = v.getId();
+    public void onClick (View v) {
+        int id = v.getId ();
         switch (id) {
             case R.id.btn1:
                 /**
                  * 获取电源信息
                  */
-                getBattery();
+                getBattery ();
                 //API大于21的时候获取电源信息
                 //getBatteryManagerByLargeThan21();
                 break;
@@ -98,67 +98,67 @@ public class MainActivity extends AppCompatActivity {
                 /**
                  * 获取蓝牙/wifi信息
                  */
-                getBluetoothAndWifoInfo();
+                getBluetoothAndWifoInfo ();
                 break;
             case R.id.btn3:
                 /**
                  * 获取SIM信息
                  */
-                getSIMInfo();
+                getSIMInfo ();
                 break;
             case R.id.btn4:
                 /**
                  * 定位信息
                  */
-                getlocation();
+                getlocation ();
                 break;
             case R.id.btn5:
                 /**
                  * 安装软件信息
                  */
-                getAppList();
+                getAppList ();
                 break;
             case R.id.btn6:
                 /**
                  * 运行进程列表
                  */
-                getRunningProcess();
+                getRunningProcess ();
                 break;
             case R.id.btn7:
                 /**
                  * 传感器 陀螺仪相关参数获取
                  */
-                getOtherInfo();
+                getOtherInfo ();
                 break;
             case R.id.btn8:
                 /**
                  * 是否双卡,双卡信息获取
                  */
-                getDoubelCard();
+                getDoubelCard ();
                 break;
             case R.id.btn9:
                 /**
                  * 相机参数
                  */
-                getCameraInfo();
+                getCameraInfo ();
                 break;
             case R.id.btn10:
                 /**
                  * 分辨率信息
                  */
-                getDisPlayInfo();
+                getDisPlayInfo ();
                 break;
             case R.id.btn11:
                 /**
                  * 硬件信息
                  */
-                getDeviceInfo();
+                getDeviceInfo ();
                 break;
             case R.id.btn12:
                 /**
                  * 环境变量信息
                  */
-                getEnvInfo();
+                getEnvInfo ();
                 break;
             default:
                 break;
@@ -172,77 +172,77 @@ public class MainActivity extends AppCompatActivity {
      **************************************************************************************/
 
 
-    private void getEnvInfo() {
-        sb = new StringBuilder();
-        sb.append("**************************************\n")
-                .append("******** getprop获取信息********\n")
-                .append("***************************************\n");
+    private void getEnvInfo () {
+        sb = new StringBuilder ();
+        sb.append ("**************************************\n")
+                .append ("******** getprop获取信息********\n")
+                .append ("***************************************\n");
         try {
-            Process proc = Runtime.getRuntime().exec("getprop");
-            sb.append(convertStreamToString(proc.getInputStream()));
+            Process proc = Runtime.getRuntime ().exec ("getprop");
+            sb.append (convertStreamToString (proc.getInputStream ()));
         } catch (Throwable e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        sb.append("************************************\n")
-                .append("/system/build.prop获取信息\n")
-                .append("************************************\n");
+        sb.append ("************************************\n")
+                .append ("/system/build.prop获取信息\n")
+                .append ("************************************\n");
         try {
-            Properties buildProp = getBuildProp();
-            sb.append(buildProp.toString());
+            Properties buildProp = getBuildProp ();
+            sb.append (buildProp.toString ());
         } catch (Throwable e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
-        sb.append("************************************\n")
-                .append("Settings.System获取信息\n")
-                .append("************************************\n");
+        sb.append ("************************************\n")
+                .append ("Settings.System获取信息\n")
+                .append ("************************************\n");
         Cursor cur = null;
-        Uri uri = Uri.parse("content://settings/system");
+        Uri uri = Uri.parse ("content://settings/system");
         try {
             // cur = managedQuery(uri, null, null, null, null);
-            cur = getContentResolver().query(uri, null, null, null, null);
-            if (cur != null) {
-                while (cur.moveToNext()) {
-                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+            cur = getContentResolver ().query (uri, null, null, null, null);
+            if(cur != null) {
+                while(cur.moveToNext ()) {
+                    sb.append (cur.getString (cur.getColumnIndex ("name"))).append (":").append (cur.getString (cur.getColumnIndex ("value"))).append ("\n");
                 }
             }
         } finally {
-            if (cur != null) {
-                cur.close();
+            if(cur != null) {
+                cur.close ();
             }
         }
-        sb.append("************************************\n")
-                .append("Settings.Secure获取信息\n")
-                .append("************************************\n");
+        sb.append ("************************************\n")
+                .append ("Settings.Secure获取信息\n")
+                .append ("************************************\n");
         try {
-            uri = Uri.parse("content://settings/secure");
-            cur = getContentResolver().query(uri, null, null, null, null);
-            if (cur != null) {
-                while (cur.moveToNext()) {
-                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+            uri = Uri.parse ("content://settings/secure");
+            cur = getContentResolver ().query (uri, null, null, null, null);
+            if(cur != null) {
+                while(cur.moveToNext ()) {
+                    sb.append (cur.getString (cur.getColumnIndex ("name"))).append (":").append (cur.getString (cur.getColumnIndex ("value"))).append ("\n");
                 }
             }
         } finally {
-            if (cur != null) {
-                cur.close();
+            if(cur != null) {
+                cur.close ();
             }
         }
-        sb.append("************************************\n")
-                .append("Settings.Global获取信息\n")
-                .append("************************************\n");
+        sb.append ("************************************\n")
+                .append ("Settings.Global获取信息\n")
+                .append ("************************************\n");
         try {
-            uri = Uri.parse("content://settings/global");
-            cur = getContentResolver().query(uri, null, null, null, null);
-            if (cur != null) {
-                while (cur.moveToNext()) {
-                    sb.append(cur.getString(cur.getColumnIndex("name"))).append(":").append(cur.getString(cur.getColumnIndex("value"))).append("\n");
+            uri = Uri.parse ("content://settings/global");
+            cur = getContentResolver ().query (uri, null, null, null, null);
+            if(cur != null) {
+                while(cur.moveToNext ()) {
+                    sb.append (cur.getString (cur.getColumnIndex ("name"))).append (":").append (cur.getString (cur.getColumnIndex ("value"))).append ("\n");
                 }
             }
         } finally {
-            if (cur != null) {
-                cur.close();
+            if(cur != null) {
+                cur.close ();
             }
         }
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
     }
 
     /**
@@ -251,18 +251,18 @@ public class MainActivity extends AppCompatActivity {
      * @return
      */
 
-    private static Properties getBuildProp() {
-        Properties prop = new Properties();
+    private static Properties getBuildProp () {
+        Properties prop = new Properties ();
         FileInputStream in = null;
         try {
-            in = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
-            prop.load(in);
+            in = new FileInputStream (new File (Environment.getRootDirectory (), "build.prop"));
+            prop.load (in);
         } catch (Throwable e) {
 
         } finally {
-            if (in != null) {
+            if(in != null) {
                 try {
-                    in.close();
+                    in.close ();
                 } catch (Throwable e) {
                 }
             }
@@ -274,42 +274,42 @@ public class MainActivity extends AppCompatActivity {
      * ************************************* 硬件设备信息 ***********************************
      **************************************************************************************/
 
-    private void getDeviceInfo() {
-        sb = new StringBuilder();
-        sb.append("*******************************\n")
-                .append("******** 硬件设备信息 *********\n")
-                .append("********************************\n");
-        sb.append("Mac[Java-API获取]:").append(getMacByJavaAPI()).append("\n");
-        sb.append("Mac[系统API获取]:").append(getMacBySystemInterface(this)).append("\n");
-        sb.append("Mac[Shell获取]:").append(getMacShell()).append("\n");
-        sb.append("Android_id:").append(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID)).append("\n");
-        sb.append("SerialNo:").append(getSerialNo()).append("\n");
+    private void getDeviceInfo () {
+        sb = new StringBuilder ();
+        sb.append ("*******************************\n")
+                .append ("******** 硬件设备信息 *********\n")
+                .append ("********************************\n");
+        sb.append ("Mac[Java-API获取]:").append (getMacByJavaAPI ()).append ("\n");
+        sb.append ("Mac[系统API获取]:").append (getMacBySystemInterface (this)).append ("\n");
+        sb.append ("Mac[Shell获取]:").append (getMacShell ()).append ("\n");
+        sb.append ("Android_id:").append (Settings.Secure.getString (getContentResolver (), Settings.Secure.ANDROID_ID)).append ("\n");
+        sb.append ("SerialNo:").append (getSerialNo ()).append ("\n");
 
-        sb.append("========Build获取信息=======").append("\n");
-        sb.append("BOARD:").append(Build.BOARD).append("\n");
-        sb.append("BOOTLOADER:").append(Build.BOOTLOADER).append("\n");
-        sb.append("BRAND:").append(Build.BRAND).append("\n");
-        sb.append("DEVICE:").append(Build.DEVICE).append("\n");
-        sb.append("DISPLAY:").append(Build.DISPLAY).append("\n");
-        sb.append("FINGERPRINT:").append(Build.FINGERPRINT).append("\n");
-        sb.append("HARDWARE:").append(Build.HARDWARE).append("\n");
-        sb.append("HOST:").append(Build.HOST).append("\n");
-        sb.append("ID:").append(Build.ID).append("\n");
-        sb.append("MANUFACTURER:").append(Build.MANUFACTURER).append("\n");
-        sb.append("MODEL:").append(Build.MODEL).append("\n");
-        sb.append("PRODUCT:").append(Build.PRODUCT).append("\n");
-        sb.append("SERIAL:").append(Build.SERIAL).append("\n");
-        if (Build.VERSION.SDK_INT > 20) {
-            sb.append("SUPPORTED_32_BIT_ABIS:").append(Build.SUPPORTED_32_BIT_ABIS).append("\n");
-            sb.append("SUPPORTED_64_BIT_ABIS:").append(Build.SUPPORTED_64_BIT_ABIS).append("\n");
-            sb.append("SUPPORTED_ABIS:").append(Build.SUPPORTED_ABIS).append("\n");
+        sb.append ("========Build获取信息=======").append ("\n");
+        sb.append ("BOARD:").append (Build.BOARD).append ("\n");
+        sb.append ("BOOTLOADER:").append (Build.BOOTLOADER).append ("\n");
+        sb.append ("BRAND:").append (Build.BRAND).append ("\n");
+        sb.append ("DEVICE:").append (Build.DEVICE).append ("\n");
+        sb.append ("DISPLAY:").append (Build.DISPLAY).append ("\n");
+        sb.append ("FINGERPRINT:").append (Build.FINGERPRINT).append ("\n");
+        sb.append ("HARDWARE:").append (Build.HARDWARE).append ("\n");
+        sb.append ("HOST:").append (Build.HOST).append ("\n");
+        sb.append ("ID:").append (Build.ID).append ("\n");
+        sb.append ("MANUFACTURER:").append (Build.MANUFACTURER).append ("\n");
+        sb.append ("MODEL:").append (Build.MODEL).append ("\n");
+        sb.append ("PRODUCT:").append (Build.PRODUCT).append ("\n");
+        sb.append ("SERIAL:").append (Build.SERIAL).append ("\n");
+        if(Build.VERSION.SDK_INT > 20) {
+            sb.append ("SUPPORTED_32_BIT_ABIS:").append (Build.SUPPORTED_32_BIT_ABIS).append ("\n");
+            sb.append ("SUPPORTED_64_BIT_ABIS:").append (Build.SUPPORTED_64_BIT_ABIS).append ("\n");
+            sb.append ("SUPPORTED_ABIS:").append (Build.SUPPORTED_ABIS).append ("\n");
         }
-        sb.append("TAGS:").append(Build.TAGS).append("\n");
-        sb.append("USER:").append(Build.USER).append("\n");
-        sb.append("CPU_ABI:").append(Build.CPU_ABI).append("\n");
-        sb.append("CPU_ABI2:").append(Build.CPU_ABI2).append("\n");
-        sb.append("RADIO:").append(Build.RADIO).append("\n");
-        showMessage(sb.toString());
+        sb.append ("TAGS:").append (Build.TAGS).append ("\n");
+        sb.append ("USER:").append (Build.USER).append ("\n");
+        sb.append ("CPU_ABI:").append (Build.CPU_ABI).append ("\n");
+        sb.append ("CPU_ABI2:").append (Build.CPU_ABI2).append ("\n");
+        sb.append ("RADIO:").append (Build.RADIO).append ("\n");
+        showMessage (sb.toString ());
     }
 
     /**
@@ -318,9 +318,9 @@ public class MainActivity extends AppCompatActivity {
      * @return
      */
     @TargetApi(9)
-    private static String getSerialNo() {
+    private static String getSerialNo () {
         String serialNo = "";
-        if (android.os.Build.VERSION.SDK_INT >= 9) {
+        if(android.os.Build.VERSION.SDK_INT >= 9) {
             serialNo = android.os.Build.SERIAL;
         }
         return serialNo;
@@ -332,12 +332,12 @@ public class MainActivity extends AppCompatActivity {
      * @param context
      * @return
      */
-    private static String getMacBySystemInterface(Context context) {
+    private static String getMacBySystemInterface (Context context) {
         try {
-            WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (checkPermission(context, Manifest.permission.ACCESS_WIFI_STATE)) {
-                WifiInfo info = wifi.getConnectionInfo();
-                return info.getMacAddress();
+            WifiManager wifi = (WifiManager) context.getSystemService (Context.WIFI_SERVICE);
+            if(checkPermission (context, Manifest.permission.ACCESS_WIFI_STATE)) {
+                WifiInfo info = wifi.getConnectionInfo ();
+                return info.getMacAddress ();
             } else {
                 return "";
             }
@@ -353,15 +353,15 @@ public class MainActivity extends AppCompatActivity {
      *
      * @return
      */
-    private static String getMacShell() {
+    private static String getMacShell () {
         try {
             String[] urls = new String[]{"/sys/class/net/wlan0/address", "/sys/class/net/eth0/address",
                     "/sys/devices/virtual/net/wlan0/address"};
             String mc;
             for (int i = 0; i < urls.length; i++) {
                 try {
-                    mc = reaMac(urls[i]);
-                    if (mc != null) {
+                    mc = reaMac (urls[i]);
+                    if(mc != null) {
                         return mc;
                     }
                 } catch (Throwable e) {
@@ -373,26 +373,26 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private static String reaMac(String url) {
+    private static String reaMac (String url) {
         String macInfo = null;
         try {
-            FileReader fstream = new FileReader(url);
+            FileReader fstream = new FileReader (url);
             BufferedReader in = null;
-            if (fstream != null) {
+            if(fstream != null) {
                 try {
-                    in = new BufferedReader(fstream, 1024);
-                    macInfo = in.readLine();
+                    in = new BufferedReader (fstream, 1024);
+                    macInfo = in.readLine ();
                 } finally {
-                    if (fstream != null) {
+                    if(fstream != null) {
                         try {
-                            fstream.close();
+                            fstream.close ();
                         } catch (Throwable e) {
 
                         }
                     }
-                    if (in != null) {
+                    if(in != null) {
                         try {
-                            in.close();
+                            in.close ();
                         } catch (Throwable e) {
 
                         }
@@ -408,102 +408,102 @@ public class MainActivity extends AppCompatActivity {
      * *********************************** 传感器／重力感应等 ********************************
      **************************************************************************************/
 
-    private void getOtherInfo() {
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    private void getOtherInfo () {
+        SensorManager sensorManager = (SensorManager) getSystemService (Context.SENSOR_SERVICE);
         //从系统服务中获得传感器管理器
 
-        List<Sensor> allSensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
+        List<Sensor> allSensors = sensorManager.getSensorList (Sensor.TYPE_ALL);
         //从传感器管理器中获得全部的传感器列表
-        sb = new StringBuilder();
-        sb.append("=======＝=传感器[").append(allSensors.size()).append("]=============").append("\n");
+        sb = new StringBuilder ();
+        sb.append ("=======＝=传感器[").append (allSensors.size ()).append ("]=============").append ("\n");
         for (Sensor s : allSensors) {//显示每个传感器的具体信息
-            switch (s.getType()) {
+            switch (s.getType ()) {
 
                 case Sensor.TYPE_ACCELEROMETER:
-                    sb.append(s.getType() + " 加速度传感器accelerometer").append("\n");
+                    sb.append (s.getType () + " 加速度传感器accelerometer").append ("\n");
                     break;
                 case Sensor.TYPE_AMBIENT_TEMPERATURE:
-                    sb.append(s.getType() + " 温度传感器temperature").append("\n");
+                    sb.append (s.getType () + " 温度传感器temperature").append ("\n");
                     break;
                 case Sensor.TYPE_GRAVITY:
-                    sb.append(s.getType() + " 重力传感器gravity").append("\n");
+                    sb.append (s.getType () + " 重力传感器gravity").append ("\n");
                     break;
                 case Sensor.TYPE_GYROSCOPE:
-                    sb.append(s.getType() + " 陀螺仪传感器gyroscope").append("\n");
+                    sb.append (s.getType () + " 陀螺仪传感器gyroscope").append ("\n");
                     break;
                 case Sensor.TYPE_LIGHT:
-                    sb.append(s.getType() + " 环境光线传感器light").append("\n");
+                    sb.append (s.getType () + " 环境光线传感器light").append ("\n");
                     break;
                 case Sensor.TYPE_LINEAR_ACCELERATION:
-                    sb.append(s.getType() + " 线性加速度传感器linear_accelerometer").append("\n");
+                    sb.append (s.getType () + " 线性加速度传感器linear_accelerometer").append ("\n");
                     break;
                 case Sensor.TYPE_MAGNETIC_FIELD:
-                    sb.append(s.getType() + " 电磁场传感器magnetic").append("\n");
+                    sb.append (s.getType () + " 电磁场传感器magnetic").append ("\n");
                     break;
                 case Sensor.TYPE_ORIENTATION:
-                    sb.append(s.getType() + " 方向传感器orientation").append("\n");
+                    sb.append (s.getType () + " 方向传感器orientation").append ("\n");
                     break;
                 case Sensor.TYPE_PRESSURE:
-                    sb.append(s.getType() + " 压力传感器pressure").append("\n");
+                    sb.append (s.getType () + " 压力传感器pressure").append ("\n");
                     break;
                 case Sensor.TYPE_PROXIMITY:
-                    sb.append(s.getType() + " 距离传感器proximity").append("\n");
+                    sb.append (s.getType () + " 距离传感器proximity").append ("\n");
                     break;
                 case Sensor.TYPE_RELATIVE_HUMIDITY:
-                    sb.append(s.getType() + " 湿度传感器relative_humidity").append("\n");
+                    sb.append (s.getType () + " 湿度传感器relative_humidity").append ("\n");
                     break;
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    sb.append(s.getType() + " 旋转矢量传感器rotation_vector").append("\n");
+                    sb.append (s.getType () + " 旋转矢量传感器rotation_vector").append ("\n");
                     break;
                 case Sensor.TYPE_TEMPERATURE:
-                    sb.append(s.getType() + " 温度传感器temperature").append("\n");
+                    sb.append (s.getType () + " 温度传感器temperature").append ("\n");
                     break;
                 default:
-                    sb.append(s.getType() + " 未知传感器").append("\n");
+                    sb.append (s.getType () + " 未知传感器").append ("\n");
                     break;
             }
-            sb.append("设备名称: ").append(s.getName()).append("\n")
-                    .append("设备版本: ").append(s.getVersion()).append("\n")
-                    .append("供应商: ").append(s.getVendor()).append("\n");
+            sb.append ("设备名称: ").append (s.getName ()).append ("\n")
+                    .append ("设备版本: ").append (s.getVersion ()).append ("\n")
+                    .append ("供应商: ").append (s.getVendor ()).append ("\n");
         }
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
     }
 
     /**************************************************************************************
      * ************************************ 双卡信息 ***************************************
      **************************************************************************************/
-    private void getDoubelCard() {
+    private void getDoubelCard () {
         try {
-            CTelephoneInfo telephonyInfo = CTelephoneInfo.getInstance(this);
-            telephonyInfo.setCTelephoneInfo(this);
-            String imeiSIM1 = telephonyInfo.getImeiSIM1();
-            String imeiSIM2 = telephonyInfo.getImeiSIM2();
-            String iNumeric1 = telephonyInfo.getINumeric1();
-            String iNumeric2 = telephonyInfo.getINumeric2();
-            boolean network1 = telephonyInfo.isDataConnected1();
-            boolean network2 = telephonyInfo.isDataConnected2();
-            boolean isSIM1Ready = telephonyInfo.isSIM1Ready();
-            boolean isSIM2Ready = telephonyInfo.isSIM2Ready();
-            boolean isDualSIM = telephonyInfo.isDualSim();
-            StringBuilder sb = new StringBuilder();
-            sb.append("============双卡信息=========").append("\n");
-            if (TextUtils.equals(imeiSIM1, imeiSIM2)) {
-                sb.append("不是双卡手机").append("\n");
+            CTelephoneInfo telephonyInfo = CTelephoneInfo.getInstance (this);
+            telephonyInfo.setCTelephoneInfo (this);
+            String imeiSIM1 = telephonyInfo.getImeiSIM1 ();
+            String imeiSIM2 = telephonyInfo.getImeiSIM2 ();
+            String iNumeric1 = telephonyInfo.getINumeric1 ();
+            String iNumeric2 = telephonyInfo.getINumeric2 ();
+            boolean network1 = telephonyInfo.isDataConnected1 ();
+            boolean network2 = telephonyInfo.isDataConnected2 ();
+            boolean isSIM1Ready = telephonyInfo.isSIM1Ready ();
+            boolean isSIM2Ready = telephonyInfo.isSIM2Ready ();
+            boolean isDualSIM = telephonyInfo.isDualSim ();
+            StringBuilder sb = new StringBuilder ();
+            sb.append ("============双卡信息=========").append ("\n");
+            if(TextUtils.equals (imeiSIM1, imeiSIM2)) {
+                sb.append ("不是双卡手机").append ("\n");
             } else {
-                sb.append("imeiSIM1").append(imeiSIM2).append("\n")
-                        .append("imeiSIM2").append(imeiSIM2).append("\n")
-                        .append("iNumeric1").append(iNumeric1).append("\n")
-                        .append("iNumeric2").append(iNumeric2).append("\n")
-                        .append("network1").append(network1).append("\n")
-                        .append("network2").append(network2).append("\n")
-                        .append("isSIM1Ready").append(isSIM1Ready).append("\n")
-                        .append("isSIM2Ready").append(isSIM2Ready).append("\n")
-                        .append("isDualSIM").append(isDualSIM).append("\n");
+                sb.append ("imeiSIM1").append (imeiSIM2).append ("\n")
+                        .append ("imeiSIM2").append (imeiSIM2).append ("\n")
+                        .append ("iNumeric1").append (iNumeric1).append ("\n")
+                        .append ("iNumeric2").append (iNumeric2).append ("\n")
+                        .append ("network1").append (network1).append ("\n")
+                        .append ("network2").append (network2).append ("\n")
+                        .append ("isSIM1Ready").append (isSIM1Ready).append ("\n")
+                        .append ("isSIM2Ready").append (isSIM2Ready).append ("\n")
+                        .append ("isDualSIM").append (isDualSIM).append ("\n");
             }
-            showMessage(sb.toString());
+            showMessage (sb.toString ());
 
         } catch (Throwable e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
@@ -515,47 +515,47 @@ public class MainActivity extends AppCompatActivity {
      * 获取相机信息.需要权限
      * <uses-permission android:name="android.permission.CAMERA"/>
      */
-    private void getCameraInfo() {
+    private void getCameraInfo () {
         try {
-            if (Build.VERSION.SDK_INT > 22) {
-                ActivityCompat.requestPermissions(this,
+            if(Build.VERSION.SDK_INT > 22) {
+                ActivityCompat.requestPermissions (this,
                         new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                         1);
             }
-            StringBuilder sb = new StringBuilder();
-            int num = Camera.getNumberOfCameras();
-            sb.append("本部手机有").append(num).append("个摄像头").append(":\n");
+            StringBuilder sb = new StringBuilder ();
+            int num = Camera.getNumberOfCameras ();
+            sb.append ("本部手机有").append (num).append ("个摄像头").append (":\n");
             for (int i = 0; i < num; i++) {
-                Camera.CameraInfo info = new Camera.CameraInfo();
-                Camera.getCameraInfo(i, info);
+                Camera.CameraInfo info = new Camera.CameraInfo ();
+                Camera.getCameraInfo (i, info);
                 //前置摄像头
-                if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                if(info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                     //stopFaceDetection();
-                    sb.append("=============前置摄像头==========").append(":\n");
+                    sb.append ("=============前置摄像头==========").append (":\n");
                 } else {
-                    sb.append("=============后置摄像头==========").append(":\n");
+                    sb.append ("=============后置摄像头==========").append (":\n");
                 }
 
-                Camera camera = Camera.open(i);
-                Camera.Parameters param = camera.getParameters();
-                List<Camera.Size> preSizes = param.getSupportedPreviewSizes();
-                sb.append("\t").append("支持预览分辨率:").append("\n");
-                for (int j = 0; j < preSizes.size(); j++) {
-                    sb.append("\t\t").append(preSizes.get(j).width).append("*").append(preSizes.get(j).height)
-                            .append("===>")
-                            .append(preSizes.get(j).width * preSizes.get(j).height / 10000)
-                            .append("\n");
+                Camera camera = Camera.open (i);
+                Camera.Parameters param = camera.getParameters ();
+                List<Camera.Size> preSizes = param.getSupportedPreviewSizes ();
+                sb.append ("\t").append ("支持预览分辨率:").append ("\n");
+                for (int j = 0; j < preSizes.size (); j++) {
+                    sb.append ("\t\t").append (preSizes.get (j).width).append ("*").append (preSizes.get (j).height)
+                            .append ("===>")
+                            .append (preSizes.get (j).width * preSizes.get (j).height / 10000)
+                            .append ("\n");
                 }
-                List<Camera.Size> picSizes = param.getSupportedPictureSizes();
-                sb.append("\t").append("支持图片分辨率:").append("\n");
-                for (int j = 0; j < picSizes.size(); j++) {
-                    sb.append("\t\t").append(picSizes.get(j).width).append("*").append(picSizes.get(j).height)
-                            .append("===>")
-                            .append(picSizes.get(j).width * picSizes.get(j).height / 10000)
-                            .append("\n");
+                List<Camera.Size> picSizes = param.getSupportedPictureSizes ();
+                sb.append ("\t").append ("支持图片分辨率:").append ("\n");
+                for (int j = 0; j < picSizes.size (); j++) {
+                    sb.append ("\t\t").append (picSizes.get (j).width).append ("*").append (picSizes.get (j).height)
+                            .append ("===>")
+                            .append (picSizes.get (j).width * picSizes.get (j).height / 10000)
+                            .append ("\n");
                 }
             }
-            showMessage(sb.toString());
+            showMessage (sb.toString ());
         } catch (Throwable e) {
 
         }
@@ -568,38 +568,38 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 获取分辨率信息
      */
-    private void getDisPlayInfo() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("========").append("WindowManager.getDefaultDisplay().getMetrics(DisplayMetrics)获取").append("=======\n");
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        sb.append("heightPixels:").append(dm.heightPixels).append("\n");
-        sb.append("widthPixels:").append(dm.widthPixels).append("\n");
-        sb.append("density:").append(dm.density).append("\n");
-        sb.append("densityDpi:").append(dm.densityDpi).append("\n");
-        sb.append("scaledDensity:").append(dm.scaledDensity).append("\n");
-        sb.append("xdpi:").append(dm.xdpi).append("\n");
-        sb.append("ydpi:").append(dm.ydpi).append("\n");
-        sb.append("========").append("Display获取的分辨率").append("=======\n");
-        Display display = getWindowManager().getDefaultDisplay();
-        sb.append("Width:").append(display.getWidth()).append("\n");
-        sb.append("Height:").append(display.getHeight()).append("\n");
-        sb.append("Rotation:").append(display.getRotation()).append("\n");
-        sb.append("Orientation:").append(display.getOrientation()).append("\n");
-        sb.append("RefreshRate:").append(display.getRefreshRate()).append("\n");
-        sb.append("========").append("通过Resources获取").append("=======\n");
-        Resources resources = this.getResources();
-        DisplayMetrics dmqq = resources.getDisplayMetrics();
-        sb.append("widthPixels:").append(dmqq.widthPixels).append("\n");
-        sb.append("heightPixels:").append(dmqq.heightPixels).append("\n");
-        sb.append("densityDpi:").append(dmqq.densityDpi).append("\n");
-        sb.append("density:").append(dmqq.density).append("\n");
-        sb.append("scaledDensity:").append(dmqq.scaledDensity).append("\n");
-        sb.append("xdpi:").append(dmqq.xdpi).append("\n");
-        sb.append("ydpi:").append(dmqq.ydpi).append("\n");
-        sb.append("DisplayMetrics:").append(dmqq.toString()).append("\n");
+    private void getDisPlayInfo () {
+        StringBuilder sb = new StringBuilder ();
+        sb.append ("========").append ("WindowManager.getDefaultDisplay().getMetrics(DisplayMetrics)获取").append ("=======\n");
+        DisplayMetrics dm = new DisplayMetrics ();
+        getWindowManager ().getDefaultDisplay ().getMetrics (dm);
+        sb.append ("heightPixels:").append (dm.heightPixels).append ("\n");
+        sb.append ("widthPixels:").append (dm.widthPixels).append ("\n");
+        sb.append ("density:").append (dm.density).append ("\n");
+        sb.append ("densityDpi:").append (dm.densityDpi).append ("\n");
+        sb.append ("scaledDensity:").append (dm.scaledDensity).append ("\n");
+        sb.append ("xdpi:").append (dm.xdpi).append ("\n");
+        sb.append ("ydpi:").append (dm.ydpi).append ("\n");
+        sb.append ("========").append ("Display获取的分辨率").append ("=======\n");
+        Display display = getWindowManager ().getDefaultDisplay ();
+        sb.append ("Width:").append (display.getWidth ()).append ("\n");
+        sb.append ("Height:").append (display.getHeight ()).append ("\n");
+        sb.append ("Rotation:").append (display.getRotation ()).append ("\n");
+        sb.append ("Orientation:").append (display.getOrientation ()).append ("\n");
+        sb.append ("RefreshRate:").append (display.getRefreshRate ()).append ("\n");
+        sb.append ("========").append ("通过Resources获取").append ("=======\n");
+        Resources resources = this.getResources ();
+        DisplayMetrics dmqq = resources.getDisplayMetrics ();
+        sb.append ("widthPixels:").append (dmqq.widthPixels).append ("\n");
+        sb.append ("heightPixels:").append (dmqq.heightPixels).append ("\n");
+        sb.append ("densityDpi:").append (dmqq.densityDpi).append ("\n");
+        sb.append ("density:").append (dmqq.density).append ("\n");
+        sb.append ("scaledDensity:").append (dmqq.scaledDensity).append ("\n");
+        sb.append ("xdpi:").append (dmqq.xdpi).append ("\n");
+        sb.append ("ydpi:").append (dmqq.ydpi).append ("\n");
+        sb.append ("DisplayMetrics:").append (dmqq.toString ()).append ("\n");
 
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
     }
 
 
@@ -609,14 +609,14 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 运行时软件列表入口
      */
-    private void getRunningProcess() {
+    private void getRunningProcess () {
         //getRunProcessByRuntime();
         //getRunProcessBySystemAPI();
         //getRunProcessLargeThen5BySystemAPI();
-        if (Build.VERSION.SDK_INT < 21) {
-            getRunProcessBySystemAPI();
+        if(Build.VERSION.SDK_INT < 21) {
+            getRunProcessBySystemAPI ();
         } else {
-            getRunProcessLargeThen5BySystemAPI();
+            getRunProcessLargeThen5BySystemAPI ();
         }
     }
 
@@ -627,25 +627,25 @@ public class MainActivity extends AppCompatActivity {
      * 3. 打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾
      */
     @TargetApi(21)
-    private void getRunProcessLargeThen5BySystemAPI() {
-        long ts = System.currentTimeMillis();
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getSystemService("usagestats");
-        List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST, ts - 1000 * 10, ts);
-        if (usageStats == null || usageStats.size() == 0) {
-            if (HavaPermissionForTest(this) == false) {
-                Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                Toast.makeText(this, "权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_SHORT).show();
+    private void getRunProcessLargeThen5BySystemAPI () {
+        long ts = System.currentTimeMillis ();
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getSystemService ("usagestats");
+        List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats (UsageStatsManager.INTERVAL_BEST, ts - 1000 * 10, ts);
+        if(usageStats == null || usageStats.size () == 0) {
+            if(HavaPermissionForTest (this) == false) {
+                Intent intent = new Intent (Settings.ACTION_USAGE_ACCESS_SETTINGS);
+                intent.setFlags (Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity (intent);
+                Toast.makeText (this, "权限不够\n请打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾", Toast.LENGTH_SHORT).show ();
             }
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append("===========运行软件列表========");
+        StringBuilder sb = new StringBuilder ();
+        sb.append ("===========运行软件列表========");
         for (UsageStats us : usageStats) {
-            Log.d(T, "--->" + us.getPackageName());
-            sb.append("\n").append(us.getPackageName());
+            Log.d (T, "--->" + us.getPackageName ());
+            sb.append ("\n").append (us.getPackageName ());
         }
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
 //        class RecentUseComparator implements Comparator<UsageStats> {
 //            @Override
 //            public int compare(UsageStats lhs, UsageStats rhs) {
@@ -664,12 +664,12 @@ public class MainActivity extends AppCompatActivity {
      * @param context 上下文参数
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static boolean HavaPermissionForTest(Context context) {
+    private static boolean HavaPermissionForTest (Context context) {
         try {
-            PackageManager packageManager = context.getPackageManager();
-            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-            int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
+            PackageManager packageManager = context.getPackageManager ();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo (context.getPackageName (), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService (Context.APP_OPS_SERVICE);
+            int mode = appOpsManager.checkOpNoThrow (AppOpsManager.OPSTR_GET_USAGE_STATS, applicationInfo.uid, applicationInfo.packageName);
             return (mode == AppOpsManager.MODE_ALLOWED);
         } catch (PackageManager.NameNotFoundException e) {
             return true;
@@ -679,7 +679,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 在新版本也不稳定 不能用了
      */
-    private void getRunProcessBySystemAPI() {
+    private void getRunProcessBySystemAPI () {
 //        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 //        List<ActivityManager.AppTask> ats = am.getAppTasks();
 //        for (ActivityManager.AppTask at : ats) {
@@ -694,106 +694,106 @@ public class MainActivity extends AppCompatActivity {
 //            Log.d(T, "getRunningServices===>" + rs.process);
 //        }
 
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) getSystemService (ACTIVITY_SERVICE);
         //获取正在运行的应用
-        List<ActivityManager.RunningAppProcessInfo> run = am.getRunningAppProcesses();
+        List<ActivityManager.RunningAppProcessInfo> run = am.getRunningAppProcesses ();
         //获取包管理器，在这里主要通过包名获取程序的图标和程序名
-        PackageManager pm = this.getPackageManager();
+        PackageManager pm = this.getPackageManager ();
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("===========运行软件列表========");
+        StringBuilder sb = new StringBuilder ();
+        sb.append ("===========运行软件列表========");
         for (ActivityManager.RunningAppProcessInfo ra : run) {
             //这里主要是过滤系统的应用和电话应用，当然你也可以把它注释掉。
-            if (ra.processName.equals("system")) {
+            if(ra.processName.equals ("system")) {
             }
 
-            sb.append("\n").append(ra.processName);
+            sb.append ("\n").append (ra.processName);
         }
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
     }
 
 
     /**
      * 这种方法不好用
      */
-    private void getRunProcessByRuntime() {
+    private void getRunProcessByRuntime () {
         for (int i = 0; i < 10000; i++) {
-            QueuedWork.execute(new SafeRunnable() {
-                public void safeRun() {
+            QueuedWork.execute (new SafeRunnable () {
+                public void safeRun () {
                     try {
-                        Thread.sleep(2 * 1000);
+                        Thread.sleep (2 * 1000);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        e.printStackTrace ();
                     }
-                    runPS();
+                    runPS ();
                 }
             });
         }
     }
 
-    private void runPS() {
+    private void runPS () {
         try {
-            Process proc = Runtime.getRuntime().exec("ps");
-            showMessage(convertStreamToString(proc.getInputStream()));
+            Process proc = Runtime.getRuntime ().exec ("ps");
+            showMessage (convertStreamToString (proc.getInputStream ()));
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         }
     }
 
-    public static String convertStreamToString(InputStream is) {
+    public static String convertStreamToString (InputStream is) {
         /*
           * To convert the InputStream to String we use the BufferedReader.readLine()
           * method. We iterate until the BufferedReader return null which means
           * there's no more data to read. Each line will appended to a StringBuilder
           * and returned as String.
           */
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = new BufferedReader (new InputStreamReader (is));
+        StringBuilder sb = new StringBuilder ();
 
         String line = null;
         try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
+            while((line = reader.readLine ()) != null) {
+                sb.append (line + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace ();
         } finally {
             try {
-                is.close();
+                is.close ();
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
 
-        return sb.toString();
+        return sb.toString ();
     }
 
     /**************************************************************************************
      * ************************************ 安装软件列表 ************************************
      **************************************************************************************/
-    private void getAppList() {
-        PackageManager pm = this.getPackageManager();
+    private void getAppList () {
+        PackageManager pm = this.getPackageManager ();
         //和tag PackageManager.GET_UNINSTALLED_PACKAGES功能一样
-        List<PackageInfo> pakageinfos = pm.getInstalledPackages(PackageManager.MATCH_UNINSTALLED_PACKAGES);
+        List<PackageInfo> pakageinfos = pm.getInstalledPackages (PackageManager.MATCH_UNINSTALLED_PACKAGES);
 //        List<PackageInfo> pakageinfos = pm.getInstalledPackages(0);
-        sb = new StringBuilder();
-        sb.append("*************************************************\n")
-                .append("***************** 安装软件列表 *****************\n")
-                .append("*************************************************\n");
+        sb = new StringBuilder ();
+        sb.append ("*************************************************\n")
+                .append ("***************** 安装软件列表 *****************\n")
+                .append ("*************************************************\n");
         for (PackageInfo packageInfo : pakageinfos) {
             // 获取应用程序的名称，不是包名，而是清单文件中的labelname
-            String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
+            String appName = packageInfo.applicationInfo.loadLabel (pm).toString ();
             String packageName = packageInfo.packageName;
             //给一同程序设置包名
-            sb.append("\n").append("=====>>>").append(appName.trim()).append("<<<=====\n")
-                    .append("PackageName:  " +
-                            "").append(packageName).append("\n");
+            sb.append ("\n").append ("=====>>>").append (appName.trim ()).append ("<<<=====\n")
+                    .append ("PackageName:  " +
+                            "").append (packageName).append ("\n");
         }
-        String result = sb.toString().trim();
-        if (TextUtils.isEmpty(result)) {
+        String result = sb.toString ().trim ();
+        if(TextUtils.isEmpty (result)) {
             result = "获取失败";
         }
-        showMessage(result);
+        showMessage (result);
     }
 
     /**************************************************************************************
@@ -801,7 +801,7 @@ public class MainActivity extends AppCompatActivity {
      **************************************************************************************/
     StringBuilder sb = null;
 
-    private void getlocation() {
+    private void getlocation () {
         /**
          * http://blog.csdn.net/jiangwei0910410003/article/details/52836241
          第一、卫星定位
@@ -835,7 +835,7 @@ public class MainActivity extends AppCompatActivity {
          在之前的一篇文章中也说到了，Hook的最关键一点就是需要找到Hook的地方，这个就需要去阅读源码来查找了。
          在Android中一般获取位置信息就涉及到下面的几个类和方法：
          */
-        sb = new StringBuilder();
+        sb = new StringBuilder ();
 
         /**
          *第一个：采用基站定位信息
@@ -848,82 +848,82 @@ public class MainActivity extends AppCompatActivity {
          +onCellLocationChanged
          +onCellInfoChanged
          */
-        sb.append("=============采用基站定位信息=========").append("\n");
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        sb.append ("=============采用基站定位信息=========").append ("\n");
+        TelephonyManager tm = (TelephonyManager) getSystemService (Context.TELEPHONY_SERVICE);
 
         /**
          *  当前设备位置。 需要权限
          *  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
          *  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
          */
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            CellLocation c = tm.getCellLocation();
-            sb.append("设备的当前位置: ").append(String.valueOf(c)).append("\n");
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            CellLocation c = tm.getCellLocation ();
+            sb.append ("设备的当前位置: ").append (String.valueOf (c)).append ("\n");
         }
 
         /**
          * 单双卡模式判断，6.0后api支持
          */
-        if (Build.VERSION.SDK_INT > 22) {
-            sb.append("手机支持数量[6.0以上api]: ");
-            switch (tm.getPhoneCount()) {
+        if(Build.VERSION.SDK_INT > 22) {
+            sb.append ("手机支持数量[6.0以上api]: ");
+            switch (tm.getPhoneCount ()) {
                 case 0:
-                    sb.append("不支持语音／短信和数据");
+                    sb.append ("不支持语音／短信和数据");
                     break;
                 case 1:
-                    sb.append("单待机模式(单sim卡功能)");
+                    sb.append ("单待机模式(单sim卡功能)");
                     break;
                 case 2:
-                    sb.append("双待机模式");
+                    sb.append ("双待机模式");
                     break;
                 default:
                     break;
             }
-            sb.append("\n");
+            sb.append ("\n");
         }
         /**
          * 设备的邻居单元信息。需要权限 貌似新版本不好用
          * <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
          */
-        if (checkPermission(this, "android.permission.ACCESS_COARSE_LOCATION")) {
-            Log.e(T, "申请了权限");
-            List<NeighboringCellInfo> ncs = tm.getNeighboringCellInfo();
-            Log.e(T, "附近设备单元信息－－－》" + ncs.size());
-            sb.append("--------------设备附近的单元信息[").append(ncs.size()).append("]--------------\n").append(ncs.toString()).append("\n");
+        if(checkPermission (this, "android.permission.ACCESS_COARSE_LOCATION")) {
+            Log.e (T, "申请了权限");
+            List<NeighboringCellInfo> ncs = tm.getNeighboringCellInfo ();
+            Log.e (T, "附近设备单元信息－－－》" + ncs.size ());
+            sb.append ("--------------设备附近的单元信息[").append (ncs.size ()).append ("]--------------\n").append (ncs.toString ()).append ("\n");
         } else {
-            Log.e(T, "没有权限");
+            Log.e (T, "没有权限");
         }
 
         /**
          * 需要权限。
          * <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
          */
-        if (Build.VERSION.SDK_INT > 16) {
-            if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                List<CellInfo> cis = tm.getAllCellInfo();
-                if (cis != null) {
-                    sb.append("--------------主小区和附近小区信息[").append(cis.size()).append("]--------------\n").append(cis.toString()).append("\n");
+        if(Build.VERSION.SDK_INT > 16) {
+            if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                List<CellInfo> cis = tm.getAllCellInfo ();
+                if(cis != null) {
+                    sb.append ("--------------主小区和附近小区信息[").append (cis.size ()).append ("]--------------\n").append (cis.toString ()).append ("\n");
                 }
             }
         }
 
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
-            tm.listen(new PhoneStateListener() {
+            tm.listen (new PhoneStateListener () {
                 @Override
-                public void onCellInfoChanged(List<CellInfo> cellInfo) {
-                    super.onCellInfoChanged(cellInfo);
-                    sb.append("--------------PhoneStateListener------------\n")
-                            .append("onCellInfoChanged======>")
-                            .append(cellInfo.toString()).append("\n");
+                public void onCellInfoChanged (List<CellInfo> cellInfo) {
+                    super.onCellInfoChanged (cellInfo);
+                    sb.append ("--------------PhoneStateListener------------\n")
+                            .append ("onCellInfoChanged======>")
+                            .append (cellInfo.toString ()).append ("\n");
                 }
 
                 @Override
-                public void onCellLocationChanged(CellLocation location) {
-                    super.onCellLocationChanged(location);
-                    sb.append("--------------PhoneStateListener------------\n")
-                            .append("onCellLocationChanged======>")
-                            .append(location.toString()).append("\n");
+                public void onCellLocationChanged (CellLocation location) {
+                    super.onCellLocationChanged (location);
+                    sb.append ("--------------PhoneStateListener------------\n")
+                            .append ("onCellLocationChanged======>")
+                            .append (location.toString ()).append ("\n");
                 }
             }, PhoneStateListener.LISTEN_CELL_LOCATION);
         }
@@ -946,65 +946,65 @@ public class MainActivity extends AppCompatActivity {
          android.telephony.CellInfo
          +isRegistered
          */
-        sb.append("=============WIFI定位信息=========").append("\n");
-        WifiManager wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        sb.append ("=============WIFI定位信息=========").append ("\n");
+        WifiManager wm = (WifiManager) getSystemService (Context.WIFI_SERVICE);
         /**
          * 获取扫描到的wifi列表
          * 需要权限
          *     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
          *     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
          */
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            List<ScanResult> srs = wm.getScanResults();
-            sb.append("wifi列表：").append(srs.toString()).append("\n");
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            List<ScanResult> srs = wm.getScanResults ();
+            sb.append ("wifi列表：").append (srs.toString ()).append ("\n");
         }
 
-        sb.append("是否打开Wi-Fi：").append(wm.isWifiEnabled()).append("\n");
-        sb.append("Wi-Fi状态：");
-        switch (wm.getWifiState()) {
+        sb.append ("是否打开Wi-Fi：").append (wm.isWifiEnabled ()).append ("\n");
+        sb.append ("Wi-Fi状态：");
+        switch (wm.getWifiState ()) {
             case WifiManager.WIFI_STATE_DISABLED:
-                sb.append("wifi_state_disabled");
+                sb.append ("wifi_state_disabled");
                 break;
             case WifiManager.WIFI_STATE_DISABLING:
-                sb.append("wifi_state_disabling");
+                sb.append ("wifi_state_disabling");
                 break;
             case WifiManager.WIFI_STATE_ENABLED:
-                sb.append("wifi_state_enabled");
+                sb.append ("wifi_state_enabled");
                 break;
             case WifiManager.WIFI_STATE_ENABLING:
-                sb.append("wifi_state_enabling");
+                sb.append ("wifi_state_enabling");
                 break;
             case WifiManager.WIFI_STATE_UNKNOWN:
-                sb.append("wifi_state_unknown");
+                sb.append ("wifi_state_unknown");
                 break;
             default:
-                sb.append("未知状态");
+                sb.append ("未知状态");
                 break;
 
         }
-        sb.append("\n");
-        if (Build.VERSION.SDK_INT > 20) {
-            sb.append("是否支持5gWi-Fi：").append(wm.is5GHzBandSupported()).append("\n");
+        sb.append ("\n");
+        if(Build.VERSION.SDK_INT > 20) {
+            sb.append ("是否支持5gWi-Fi：").append (wm.is5GHzBandSupported ()).append ("\n");
         }
-        WifiInfo wifiInfo = wm.getConnectionInfo();
+        WifiInfo wifiInfo = wm.getConnectionInfo ();
         //连接wifi的地址
-        String bssid = wifiInfo.getBSSID();
+        String bssid = wifiInfo.getBSSID ();
         //连接wifi名字
-        String ssid = wifiInfo.getSSID();
+        String ssid = wifiInfo.getSSID ();
         //mac地址
-        String macAddr = wifiInfo.getMacAddress();
-        sb.append("连接wifi的地址:").append(bssid).append("\n");
-        sb.append("连接wifi名字:").append(ssid).append("\n");
-        sb.append("mac地址").append(macAddr).append("\n");
+        String macAddr = wifiInfo.getMacAddress ();
+        sb.append ("连接wifi的地址:").append (bssid).append ("\n");
+        sb.append ("连接wifi名字:").append (ssid).append ("\n");
+        sb.append ("mac地址").append (macAddr).append ("\n");
 
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm != null) {
-            if (checkPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
-                NetworkInfo ni = cm.getActiveNetworkInfo();
-                sb.append("网络连接类型:").append(ni.getTypeName()).append("\n");
-                sb.append("是否网络连接中:").append(ni.isConnectedOrConnecting()).append("\n");
-                sb.append("已经连接网络:").append(ni.isConnected()).append("\n");
-                sb.append("是否可以连接网络:").append(ni.isAvailable()).append("\n");
+        ConnectivityManager cm = (ConnectivityManager) getSystemService (Context.CONNECTIVITY_SERVICE);
+        if(cm != null) {
+            if(checkPermission (this, Manifest.permission.ACCESS_NETWORK_STATE)) {
+                NetworkInfo ni = cm.getActiveNetworkInfo ();
+                sb.append ("网络连接类型:").append (ni.getTypeName ()).append ("\n");
+                sb.append ("是否网络连接中:").append (ni.isConnectedOrConnecting ()).append ("\n");
+                sb.append ("已经连接网络:").append (ni.isConnected ()).append ("\n");
+                sb.append ("是否可以连接网络:").append (ni.isAvailable ()).append ("\n");
             }
 
         }
@@ -1020,68 +1020,68 @@ public class MainActivity extends AppCompatActivity {
          +addGpsStatusListener 替换方法registerGnssStatusCallback
          +addNmeaListener
          */
-        sb.append("=============GPS定位信息=========").append("\n");
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        sb.append ("=============GPS定位信息=========").append ("\n");
+        LocationManager lm = (LocationManager) getSystemService (Context.LOCATION_SERVICE);
+        if(checkPermission (this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             //检索有关GPS引擎当前状态的信息。
-            GpsStatus gs = lm.getGpsStatus(null);
-            sb.append("GPS引擎当前状态:").append(gs.toString()).append("\n");
+            GpsStatus gs = lm.getGpsStatus (null);
+            sb.append ("GPS引擎当前状态:").append (gs.toString ()).append ("\n");
         }
         /**
          * 最后位置
          */
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             try {
-                Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if (location != null) {
-                    sb.append("最后位置经度:").append(location.getLatitude()).append("\n");
-                    sb.append("最后位置纬度:").append(location.getLongitude()).append("\n");
-                    sb.append("最后位置海拔:").append(location.getAltitude()).append("\n");
-                    sb.append("最后速度(米/秒):").append(location.getSpeed()).append("\n");
-                    sb.append("最后时间(1970.1.1到现在的毫秒):").append(location.getTime()).append("\n");
-                    sb.append("最后Accuracy:").append(location.getAccuracy()).append("\n");
-                    sb.append("最后Bearing:").append(location.getBearing()).append("\n");
+                Location location = lm.getLastKnownLocation (LocationManager.GPS_PROVIDER);
+                if(location != null) {
+                    sb.append ("最后位置经度:").append (location.getLatitude ()).append ("\n");
+                    sb.append ("最后位置纬度:").append (location.getLongitude ()).append ("\n");
+                    sb.append ("最后位置海拔:").append (location.getAltitude ()).append ("\n");
+                    sb.append ("最后速度(米/秒):").append (location.getSpeed ()).append ("\n");
+                    sb.append ("最后时间(1970.1.1到现在的毫秒):").append (location.getTime ()).append ("\n");
+                    sb.append ("最后Accuracy:").append (location.getAccuracy ()).append ("\n");
+                    sb.append ("最后Bearing:").append (location.getBearing ()).append ("\n");
                 }
             } catch (Throwable e) {
-                e.printStackTrace();
+                e.printStackTrace ();
             }
         }
-        List<String> ss = lm.getProviders(true);
-        sb.append("附近名称列表:").append(ss.toString()).append("\n");
+        List<String> ss = lm.getProviders (true);
+        sb.append ("附近名称列表:").append (ss.toString ()).append ("\n");
 //        lm.getBestProvider(Criteria.ACCURACY_HIGH,false);
-        if (checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-            lm.addGpsStatusListener(new GpsStatus.Listener() {
+        if(checkPermission (this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            lm.addGpsStatusListener (new GpsStatus.Listener () {
                 @Override
-                public void onGpsStatusChanged(int event) {
-                    sb.append("GpsStatus.Listener onGpsStatusChanged:").append(event).append("\n");
+                public void onGpsStatusChanged (int event) {
+                    sb.append ("GpsStatus.Listener onGpsStatusChanged:").append (event).append ("\n");
                 }
             });
-            lm.addNmeaListener(new GpsStatus.NmeaListener() {
+            lm.addNmeaListener (new GpsStatus.NmeaListener () {
 
                 @Override
-                public void onNmeaReceived(long timestamp, String nmea) {
-                    sb.append("---------GpsStatus.NmeaListener onNmeaReceived---------\n")
-                            .append("timestamp:").append(timestamp).append("\n")
-                            .append("nmea:").append(nmea).append("\n");
+                public void onNmeaReceived (long timestamp, String nmea) {
+                    sb.append ("---------GpsStatus.NmeaListener onNmeaReceived---------\n")
+                            .append ("timestamp:").append (timestamp).append ("\n")
+                            .append ("nmea:").append (nmea).append ("\n");
                 }
             });
         }
 
-        showMessage(sb.toString());
+        showMessage (sb.toString ());
     }
 
     /**************************************************************************************
      * ******************************* SIM卡相关信息获取,需要部分权限 ***************************
      **************************************************************************************/
 
-    private void getSIMInfo() {
+    private void getSIMInfo () {
         /**
          * 需要权限 android.permission.READ_PHONE_STATE
          */
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) getSystemService (Context.TELEPHONY_SERVICE);
         String simState = "unknow";
         //卡状态
-        switch (tm.getSimState()) {
+        switch (tm.getSimState ()) {
             case TelephonyManager.SIM_STATE_READY:
                 simState = "sim_state_ready";
                 break;
@@ -1105,15 +1105,15 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         //sim卡国家码
-        String simCountryIso = tm.getSimCountryIso();
+        String simCountryIso = tm.getSimCountryIso ();
         // MCC+MNC
-        String operator = tm.getSimOperator();
+        String operator = tm.getSimOperator ();
         //服务提供名字(SPN)
-        String simOperatorName = tm.getSimOperatorName();
+        String simOperatorName = tm.getSimOperatorName ();
         String simSerialNumber = "unknow";
         //SIM卡序列号,需要权限android.Manifest.permission.READ_PHONE_STATE
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            simSerialNumber = tm.getSimSerialNumber();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            simSerialNumber = tm.getSimSerialNumber ();
         }
         //订阅ID.
         /**
@@ -1125,18 +1125,18 @@ public class MainActivity extends AppCompatActivity {
          *          在同一个国家内,如果有多个CDMA运营商,可以通过MNC来进行区别.
          */
         String subscriberId = "unknow";
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            subscriberId = tm.getSubscriberId();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            subscriberId = tm.getSubscriberId ();
         }
-        int mcc = getResources().getConfiguration().mcc;
-        int mnc = getResources().getConfiguration().mnc;
+        int mcc = getResources ().getConfiguration ().mcc;
+        int mnc = getResources ().getConfiguration ().mnc;
 
         /**
          * 手机其他信息采集
          */
 
         String callState = "无活动";
-        switch (tm.getCallState()) {
+        switch (tm.getCallState ()) {
             case TelephonyManager.CALL_STATE_RINGING:
                 callState = "响铃";
                 break;
@@ -1157,67 +1157,67 @@ public class MainActivity extends AppCompatActivity {
          */
 
         String cellLoc = "获取失败";
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-            CellLocation loc = tm.getCellLocation();
-            if (loc != null)
-                cellLoc = loc.toString();
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            CellLocation loc = tm.getCellLocation ();
+            if(loc != null)
+                cellLoc = loc.toString ();
         }
         //device id
         String imei = "unknow";
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            imei = tm.getDeviceId();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            imei = tm.getDeviceId ();
         }
         //设备软件版本号
         String softwareVersion = "unknow";
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            softwareVersion = tm.getDeviceSoftwareVersion();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            softwareVersion = tm.getDeviceSoftwareVersion ();
         }
         //手机号获取
         String lineNum = "unknow";
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            lineNum = tm.getLine1Number();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            lineNum = tm.getLine1Number ();
         }
         /**
          * 当前移动终端附近移动终端的信息 需要权限android.permission.ACCESS_COARSE_LOCATION
          */
-        StringBuilder sb = new StringBuilder();
-        if (checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        StringBuilder sb = new StringBuilder ();
+        if(checkPermission (this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             try {
-                List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
+                List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo ();
                 for (NeighboringCellInfo info : infos) {
-                    if (info != null) {
+                    if(info != null) {
                         // 获取小区号
-                        int cid = info.getCid();
+                        int cid = info.getCid ();
                         // 获取邻居小区LAC
                         // LAC:
                         // 位置区域码。为了确定移动台的位置，每个GSM/PLMN的覆盖区都被划分成许多位置区，LAC则用于标识不同的位置区。
-                        int lac = info.getLac();
-                        int networkType = info.getNetworkType();
-                        int mPsc = info.getPsc();
+                        int lac = info.getLac ();
+                        int networkType = info.getNetworkType ();
+                        int mPsc = info.getPsc ();
                         // 获取邻居小区信号强度
-                        int rssi = info.getRssi();
-                        sb.append("小区号:").append(cid)
-                                .append(";LAC:").append(lac)
-                                .append(";networkType:").append(networkType)
-                                .append(";mPsc:").append(mPsc)
-                                .append(";小区信号强度:").append(rssi);
+                        int rssi = info.getRssi ();
+                        sb.append ("小区号:").append (cid)
+                                .append (";LAC:").append (lac)
+                                .append (";networkType:").append (networkType)
+                                .append (";mPsc:").append (mPsc)
+                                .append (";小区信号强度:").append (rssi);
                     }
                 }
-                sb.append("\n");
+                sb.append ("\n");
             } catch (Throwable e) {
             }
         }
 
         //注册的ISO国家注册码
-        String networkCountryIso = tm.getNetworkCountryIso();
+        String networkCountryIso = tm.getNetworkCountryIso ();
         //MCC+MNC
-        String networkOperator = tm.getNetworkOperator();
+        String networkOperator = tm.getNetworkOperator ();
         //(当前已注册的用户)的名字
-        String networkOperatorName = tm.getNetworkOperatorName();
+        String networkOperatorName = tm.getNetworkOperatorName ();
         //当前使用的网络类型
         String networkType = "unknow";
 
-        switch (tm.getNetworkType()) {
+        switch (tm.getNetworkType ()) {
             case TelephonyManager.NETWORK_TYPE_1xRTT:
                 networkType = "network_type_1xrtt";
                 break;
@@ -1271,7 +1271,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //手机类型
         String phoneType = "unknow";
-        switch (tm.getPhoneType()) {
+        switch (tm.getPhoneType ()) {
             case TelephonyManager.PHONE_TYPE_NONE:
                 phoneType = "phone_type_none";
                 break;
@@ -1289,20 +1289,20 @@ public class MainActivity extends AppCompatActivity {
         }
         //语音邮件号码
         String VoiceMailNumber = "unknow";
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            VoiceMailNumber = tm.getVoiceMailNumber();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            VoiceMailNumber = tm.getVoiceMailNumber ();
         }
         //ICC卡是否存在
-        boolean hasIccCard = tm.hasIccCard();
+        boolean hasIccCard = tm.hasIccCard ();
         //是否漫游
         boolean isNetworkRoaming = false;
-        if (checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
-            isNetworkRoaming = tm.isNetworkRoaming();
+        if(checkPermission (this, Manifest.permission.READ_PHONE_STATE)) {
+            isNetworkRoaming = tm.isNetworkRoaming ();
         }
 
         //数据活动状态
         String dataActivity = "unknow";
-        switch (tm.getDataActivity()) {
+        switch (tm.getDataActivity ()) {
             case TelephonyManager.DATA_ACTIVITY_NONE:
                 phoneType = "data_activity_none";
                 break;
@@ -1323,7 +1323,7 @@ public class MainActivity extends AppCompatActivity {
         }
         //数据连接状态
         String dataState = "unknow";
-        switch (tm.getDataState()) {
+        switch (tm.getDataState ()) {
             case TelephonyManager.DATA_DISCONNECTED:
                 phoneType = "data_disconnected";
                 break;
@@ -1365,28 +1365,28 @@ public class MainActivity extends AppCompatActivity {
                 + "\n是否漫游:" + isNetworkRoaming
                 + "\n数据活动状态:" + dataActivity
                 + "\n数据连接状态:" + dataState;
-        showMessage(s);
+        showMessage (s);
 
     }
 
     /**************************************************************************************
      * ******************************* 蓝牙/无线相关的,需要部分权限 ***************************
      **************************************************************************************/
-    private void getBluetoothAndWifoInfo() {
+    private void getBluetoothAndWifoInfo () {
 
 
         /**
          * 需要权限  <uses-permission android:name="android.permission.BLUETOOTH" />
          */
-        BluetoothAdapter bAdapt = BluetoothAdapter.getDefaultAdapter();
+        BluetoothAdapter bAdapt = BluetoothAdapter.getDefaultAdapter ();
         //蓝牙地址
-        String bluetoothAddr = bAdapt.getAddress();
+        String bluetoothAddr = bAdapt.getAddress ();
         //Bluetooth name
-        String bluetoothName = bAdapt.getName();
+        String bluetoothName = bAdapt.getName ();
 
         //蓝牙状态
         String bluetoothState = "idle";
-        switch (bAdapt.getState()) {
+        switch (bAdapt.getState ()) {
             case BluetoothAdapter.STATE_ON:
                 bluetoothState = "state_on";
                 break;
@@ -1424,36 +1424,36 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 需要权限 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
          */
-        WifiManager mWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = mWifi.getConnectionInfo();
+        WifiManager mWifi = (WifiManager) getSystemService (Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = mWifi.getConnectionInfo ();
         //连接wifi的地址
-        String bssidName = wifiInfo.getBSSID();
+        String bssidName = wifiInfo.getBSSID ();
         //连接wifi名字
-        String ssidName = wifiInfo.getSSID();
+        String ssidName = wifiInfo.getSSID ();
         //mac地址
-        String wifiMac = wifiInfo.getMacAddress();
+        String wifiMac = wifiInfo.getMacAddress ();
 
         //当前频率
         int frequency = -1;
-        if (Build.VERSION.SDK_INT > 20) {
+        if(Build.VERSION.SDK_INT > 20) {
             try {
-                frequency = wifiInfo.getFrequency();
+                frequency = wifiInfo.getFrequency ();
             } catch (Throwable e) {
 
             }
         }
         //int ip值
-        int ip = wifiInfo.getIpAddress();
+        int ip = wifiInfo.getIpAddress ();
         //当前链接速度
-        int linkSpeed = wifiInfo.getLinkSpeed();
+        int linkSpeed = wifiInfo.getLinkSpeed ();
         //是否为隐藏wifi
-        boolean isHiddenSSID = wifiInfo.getHiddenSSID();
+        boolean isHiddenSSID = wifiInfo.getHiddenSSID ();
         //当前网络信号,单位dBm
-        int rssi = wifiInfo.getRssi();
+        int rssi = wifiInfo.getRssi ();
         //网络ID
-        int networkID = wifiInfo.getNetworkId();
+        int networkID = wifiInfo.getNetworkId ();
 
-        String macAddress = android.provider.Settings.Secure.getString(getContentResolver(), "bluetooth_address");
+        String macAddress = android.provider.Settings.Secure.getString (getContentResolver (), "bluetooth_address");
 
         /**
          * 结果拼接
@@ -1466,16 +1466,16 @@ public class MainActivity extends AppCompatActivity {
                 + "\n===============无线信息==============="
                 + "\n无线名字:" + ssidName
                 + "\n无线MAC[官方API获取]:" + wifiMac
-                + "\n无线MAC[javaAPI获取]:" + getMacByJavaAPI()
+                + "\n无线MAC[javaAPI获取]:" + getMacByJavaAPI ()
                 + "\nBssid:" + bssidName
                 + "\n当前频率:" + frequency
-                + "\nWIFI信道[系统API获取]:" + getCurrentChannel()
-                + "\nWIFI信道[根据频率获取]:" + getChannelByFrequency(frequency)
-                + "\nip:" + longToIp(ip)
+                + "\nWIFI信道[系统API获取]:" + getCurrentChannel ()
+                + "\nWIFI信道[根据频率获取]:" + getChannelByFrequency (frequency)
+                + "\nip:" + longToIp (ip)
                 + "\n当前链接速度:" + linkSpeed
                 + "\n是否为隐藏wifi:" + isHiddenSSID
                 + "\n信号强度:" + rssi + "dBm\n网络ID:" + networkID;
-        showMessage(s);
+        showMessage (s);
 
     }
 
@@ -1486,24 +1486,24 @@ public class MainActivity extends AppCompatActivity {
      * @return
      */
     @TargetApi(9)
-    private String getMacByJavaAPI() {
+    private String getMacByJavaAPI () {
         try {
-            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                NetworkInterface netInterface = interfaces.nextElement();
-                if ("wlan0".equals(netInterface.getName()) || "eth0".equals(netInterface.getName())) {
-                    byte[] addr = netInterface.getHardwareAddress();
-                    if (addr == null || addr.length == 0) {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces ();
+            while(interfaces.hasMoreElements ()) {
+                NetworkInterface netInterface = interfaces.nextElement ();
+                if("wlan0".equals (netInterface.getName ()) || "eth0".equals (netInterface.getName ())) {
+                    byte[] addr = netInterface.getHardwareAddress ();
+                    if(addr == null || addr.length == 0) {
                         return null;
                     }
-                    StringBuilder buf = new StringBuilder();
+                    StringBuilder buf = new StringBuilder ();
                     for (byte b : addr) {
-                        buf.append(String.format("%02X:", b));
+                        buf.append (String.format ("%02X:", b));
                     }
-                    if (buf.length() > 0) {
-                        buf.deleteCharAt(buf.length() - 1);
+                    if(buf.length () > 0) {
+                        buf.deleteCharAt (buf.length () - 1);
                     }
-                    return buf.toString().toLowerCase(Locale.getDefault());
+                    return buf.toString ().toLowerCase (Locale.getDefault ());
                 }
             }
         } catch (Throwable e) {
@@ -1511,7 +1511,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    public String longToIp(long i) {
+    public String longToIp (long i) {
 
         return ((i >> 24) & 0xFF) +
                 "." + ((i >> 16) & 0xFF) +
@@ -1521,16 +1521,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public int getCurrentChannel() {
-        WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+    public int getCurrentChannel () {
+        WifiManager wifiManager = (WifiManager) getSystemService (Context.WIFI_SERVICE);
 
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();// 当前wifi连接信息
-        List<ScanResult> scanResults = wifiManager.getScanResults();
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo ();// 当前wifi连接信息
+        List<ScanResult> scanResults = wifiManager.getScanResults ();
         for (ScanResult result : scanResults) {
-            if (result.BSSID.equalsIgnoreCase(wifiInfo.getBSSID())
-                    && result.SSID.equalsIgnoreCase(wifiInfo.getSSID()
-                    .substring(1, wifiInfo.getSSID().length() - 1))) {
-                return getChannelByFrequency(result.frequency);
+            if(result.BSSID.equalsIgnoreCase (wifiInfo.getBSSID ())
+                    && result.SSID.equalsIgnoreCase (wifiInfo.getSSID ()
+                    .substring (1, wifiInfo.getSSID ().length () - 1))) {
+                return getChannelByFrequency (result.frequency);
             }
         }
 
@@ -1543,7 +1543,7 @@ public class MainActivity extends AppCompatActivity {
      * @param frequency
      * @return
      */
-    public int getChannelByFrequency(int frequency) {
+    public int getChannelByFrequency (int frequency) {
         int channel = -1;
         switch (frequency) {
             case 2412:
@@ -1617,27 +1617,27 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 获取电源相关的,注解广播接收器实现
      */
-    private void getBattery() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_BATTERY_CHANGED);
-        this.registerReceiver(mBroadcastReceiver, filter);
+    private void getBattery () {
+        IntentFilter filter = new IntentFilter ();
+        filter.addAction (Intent.ACTION_BATTERY_CHANGED);
+        this.registerReceiver (mBroadcastReceiver, filter);
     }
 
-    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver () {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-                int status = intent.getIntExtra("status", 0);
-                int health = intent.getIntExtra("health", 0);
-                boolean present = intent.getBooleanExtra("present", false);
-                int level = intent.getIntExtra("level", 0);
-                int scale = intent.getIntExtra("scale", 0);
-                int icon_small = intent.getIntExtra("icon-small", 0);
-                int plugged = intent.getIntExtra("plugged", 0);
-                int voltage = intent.getIntExtra("voltage", 0);
-                int temperature = intent.getIntExtra("temperature", 0);
-                String technology = intent.getStringExtra("technology");
+        public void onReceive (Context context, Intent intent) {
+            String action = intent.getAction ();
+            if(action.equals (Intent.ACTION_BATTERY_CHANGED)) {
+                int status = intent.getIntExtra ("status", 0);
+                int health = intent.getIntExtra ("health", 0);
+                boolean present = intent.getBooleanExtra ("present", false);
+                int level = intent.getIntExtra ("level", 0);
+                int scale = intent.getIntExtra ("scale", 0);
+                int icon_small = intent.getIntExtra ("icon-small", 0);
+                int plugged = intent.getIntExtra ("plugged", 0);
+                int voltage = intent.getIntExtra ("voltage", 0);
+                int temperature = intent.getIntExtra ("temperature", 0);
+                String technology = intent.getStringExtra ("technology");
 
                 String statusString = "";
                 switch (status) {
@@ -1692,15 +1692,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 String s = "状态:" + statusString + "\n"
                         + "健康:" + healthString + "\n"
-                        + "是否存在电池:" + String.valueOf(present) + "\n"
-                        + "获得当前电量:" + String.valueOf(level) + "\n"
-                        + "获得总电量:" + String.valueOf(scale) + "\n"
-                        + "图标ID:" + String.valueOf(icon_small) + "\n"
+                        + "是否存在电池:" + String.valueOf (present) + "\n"
+                        + "获得当前电量:" + String.valueOf (level) + "\n"
+                        + "获得总电量:" + String.valueOf (scale) + "\n"
+                        + "图标ID:" + String.valueOf (icon_small) + "\n"
                         + "连接的电源插座:" + acString + "\n"
-                        + "电压:" + String.valueOf(voltage) + "\n"
-                        + "温度:" + String.valueOf(temperature) + "\n"
+                        + "电压:" + String.valueOf (voltage) + "\n"
+                        + "温度:" + String.valueOf (temperature) + "\n"
                         + "电池类型:" + technology + "\n";
-                showMessage(s);
+                showMessage (s);
             }
         }
     };
@@ -1710,11 +1710,11 @@ public class MainActivity extends AppCompatActivity {
      * 获取电源相关的. api大于21才可以使用
      */
     @TargetApi(21)
-    public void getBatteryManagerByLargeThan21() {
-        BatteryManager bm = (BatteryManager) getSystemService(BATTERY_SERVICE);
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
-        System.out.println(bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
+    public void getBatteryManagerByLargeThan21 () {
+        BatteryManager bm = (BatteryManager) getSystemService (BATTERY_SERVICE);
+        System.out.println (bm.getIntProperty (BatteryManager.BATTERY_PROPERTY_CHARGE_COUNTER));
+        System.out.println (bm.getIntProperty (BatteryManager.BATTERY_PROPERTY_CURRENT_AVERAGE));
+        System.out.println (bm.getIntProperty (BatteryManager.BATTERY_PROPERTY_CURRENT_NOW));
     }
 
     /**************************************************************************************
@@ -1726,23 +1726,23 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param s
      */
-    private void showMessage(String s) {
-        Message msg = new Message();
+    private void showMessage (String s) {
+        Message msg = new Message ();
         msg.what = MSG_REFRESH_UI;
         msg.obj = s;
-        mhHandler.sendMessage(msg);
+        mhHandler.sendMessage (msg);
     }
 
     /**
      * UI展示信息
      */
-    private Handler mhHandler = new Handler() {
+    private Handler mhHandler = new Handler () {
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage (Message msg) {
             switch (msg.what) {
                 case MSG_REFRESH_UI:
-                    tv = (TextView) findViewById(id.textView);
-                    tv.setText(msg.obj.toString());
+                    tv = (TextView) findViewById (id.textView);
+                    tv.setText (msg.obj.toString ());
                     break;
             }
         }
@@ -1756,14 +1756,14 @@ public class MainActivity extends AppCompatActivity {
      * @param permission 权限信息的完整名称 如：<code>android.permission.INTERNET</code>
      * @return 当前仅当宿主应用含有 参数 permission 对应的权限 返回true 否则返回 false
      */
-    public static boolean checkPermission(Context context, String permission) {
+    public static boolean checkPermission (Context context, String permission) {
         boolean result = false;
-        if (Build.VERSION.SDK_INT >= 23) {
+        if(Build.VERSION.SDK_INT >= 23) {
             try {
-                Class<?> clazz = Class.forName("android.content.Context");
-                Method method = clazz.getMethod("checkSelfPermission", String.class);
-                int rest = (Integer) method.invoke(context, permission);
-                if (rest == PackageManager.PERMISSION_GRANTED) {
+                Class<?> clazz = Class.forName ("android.content.Context");
+                Method method = clazz.getMethod ("checkSelfPermission", String.class);
+                int rest = (Integer) method.invoke (context, permission);
+                if(rest == PackageManager.PERMISSION_GRANTED) {
                     result = true;
                 } else {
                     result = false;
@@ -1772,8 +1772,8 @@ public class MainActivity extends AppCompatActivity {
                 result = false;
             }
         } else {
-            PackageManager pm = context.getPackageManager();
-            if (pm.checkPermission(permission, context.getPackageName()) == PackageManager.PERMISSION_GRANTED) {
+            PackageManager pm = context.getPackageManager ();
+            if(pm.checkPermission (permission, context.getPackageName ()) == PackageManager.PERMISSION_GRANTED) {
                 result = true;
             }
         }

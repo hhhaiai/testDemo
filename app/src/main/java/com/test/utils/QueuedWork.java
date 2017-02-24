@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
  * @Author: sanbo
  */
 public class QueuedWork {
-    private static List<WeakReference<ScheduledFuture<?>>> queue = new ArrayList<WeakReference<ScheduledFuture<?>>>();
-    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static List<WeakReference<ScheduledFuture<?>>> queue = new ArrayList<WeakReference<ScheduledFuture<?>>> ();
+    private static ExecutorService executor = Executors.newSingleThreadExecutor ();
     private static long MAX_WAIT_SECONDS = 5;
 
     /**
@@ -27,66 +27,66 @@ public class QueuedWork {
      *
      * @param command
      */
-    public static void execute(Runnable command) {
-        if (executor.isShutdown()) {
-            executor = Executors.newSingleThreadExecutor();
+    public static void execute (Runnable command) {
+        if(executor.isShutdown ()) {
+            executor = Executors.newSingleThreadExecutor ();
         }
 
-        executor.execute(command);
+        executor.execute (command);
     }
 
-    public static void waitForAsyncTask() {
+    public static void waitForAsyncTask () {
         try {
             for (WeakReference<ScheduledFuture<?>> reference : queue) {
-                ScheduledFuture<?> f = reference.get();
-                if (f != null) {
-                    f.cancel(false);
+                ScheduledFuture<?> f = reference.get ();
+                if(f != null) {
+                    f.cancel (false);
                 }
             }
-            queue.clear();
+            queue.clear ();
 
-            if (!executor.isShutdown())
-                executor.shutdown();
-            if (!executor2.isShutdown())
-                executor2.shutdown();
+            if(!executor.isShutdown ())
+                executor.shutdown ();
+            if(!executor2.isShutdown ())
+                executor2.shutdown ();
 
-            executor.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
-            executor2.awaitTermination(MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            executor.awaitTermination (MAX_WAIT_SECONDS, TimeUnit.SECONDS);
+            executor2.awaitTermination (MAX_WAIT_SECONDS, TimeUnit.SECONDS);
         } catch (Exception ignore) {
         }
     }
 
-    private static ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
+    private static ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor ();
 
     /**
      * Thread pool for caching service, file or net operation
      *
      * @param command
      */
-    public synchronized static void post(Runnable command) {
+    public synchronized static void post (Runnable command) {
 
-        if (executor2.isShutdown()) {
-            executor2 = Executors.newSingleThreadScheduledExecutor();
+        if(executor2.isShutdown ()) {
+            executor2 = Executors.newSingleThreadScheduledExecutor ();
         }
-        executor2.execute(command);
+        executor2.execute (command);
     }
 
-    public synchronized static void postDelayed(Runnable command, long delay) {
-        if (executor2.isShutdown()) {
-            executor2 = Executors.newSingleThreadScheduledExecutor();
+    public synchronized static void postDelayed (Runnable command, long delay) {
+        if(executor2.isShutdown ()) {
+            executor2 = Executors.newSingleThreadScheduledExecutor ();
         }
 
-        queue.add(new WeakReference<ScheduledFuture<?>>(executor2.schedule(command, delay, TimeUnit.MILLISECONDS)));
+        queue.add (new WeakReference<ScheduledFuture<?>> (executor2.schedule (command, delay, TimeUnit.MILLISECONDS)));
     }
 
-    public synchronized static void postSync(Runnable command) {
-        if (executor2.isShutdown()) {
-            executor2 = Executors.newSingleThreadScheduledExecutor();
+    public synchronized static void postSync (Runnable command) {
+        if(executor2.isShutdown ()) {
+            executor2 = Executors.newSingleThreadScheduledExecutor ();
         }
 
-        Future<?> f = executor2.submit(command);
+        Future<?> f = executor2.submit (command);
         try {
-            f.get(5, TimeUnit.SECONDS);
+            f.get (5, TimeUnit.SECONDS);
         } catch (Exception ignore) {
         }
     }
