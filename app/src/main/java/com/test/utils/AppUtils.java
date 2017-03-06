@@ -17,32 +17,35 @@ import java.util.List;
  * Author: sanbo
  */
 public class AppUtils {
-    public static void getNowActivity (Application app) {
+
+    public static String getNowActivity(Application app) {
         Field f;
         Object thread = null;
         Instrumentation base;
+        String result = "";
         // Replace instrumentation
         try {
-            thread = getActivityThread (app);
-            f = thread.getClass ().getDeclaredField ("mInstrumentation");
-            f.setAccessible (true);
-            base = (Instrumentation) f.get (thread);
-            if(base != null) {
+            thread = getActivityThread(app);
+            f = thread.getClass().getDeclaredField("mInstrumentation");
+            f.setAccessible(true);
+            base = (Instrumentation) f.get(thread);
+            if (base != null) {
                 //get instrumentation activity list
                 List<Instrumentation.ActivityMonitor> mActivityMonitors;
-                f = Instrumentation.class.getDeclaredField ("mActivityMonitors");
-                f.setAccessible (true);
-                mActivityMonitors = (List<Instrumentation.ActivityMonitor>) f.get (base);
-                for (int i = 0; i < mActivityMonitors.size (); i++) {
-                    Instrumentation.ActivityMonitor activityMonitor = mActivityMonitors.get (i);
+                f = Instrumentation.class.getDeclaredField("mActivityMonitors");
+                f.setAccessible(true);
+                mActivityMonitors = (List<Instrumentation.ActivityMonitor>) f.get(base);
+                for (int i = 0; i < mActivityMonitors.size(); i++) {
+                    Instrumentation.ActivityMonitor activityMonitor = mActivityMonitors.get(i);
                     //获取Activity名称
-                    activityMonitor.getLastActivity ().getClass ().getName ();
-                    Log.d ("sanbo", "AppUtils getNowActivity " + activityMonitor.getLastActivity ().getClass ().getName ());
+                    result = activityMonitor.getLastActivity().getClass().getName();
+                    Log.d("sanbo", "AppUtils getNowActivity " + result);
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException ("Failed to replace instrumentation for thread: " + thread);
+            e.printStackTrace();
         }
+        return result;
     }
 
     private static Object getActivityThread (Context context) {
