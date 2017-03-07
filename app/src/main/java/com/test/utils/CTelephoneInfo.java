@@ -91,7 +91,6 @@ public class CTelephoneInfo {
             TelephonyManager telephonyManager = ((TelephonyManager)
                     mContext.getSystemService (Context.TELEPHONY_SERVICE));
             CTelephoneInfo.imeiSIM1 = telephonyManager.getDeviceId ();
-            ;
             CTelephoneInfo.imeiSIM2 = null;
             try {
                 CTelephoneInfo.imeiSIM1 = getOperatorBySlot (mContext, "getDeviceIdGemini", 0);
