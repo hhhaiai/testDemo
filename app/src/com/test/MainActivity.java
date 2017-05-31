@@ -170,6 +170,10 @@ public class MainActivity extends AppCompatActivity {
             getEmuInfo();
             break;
         case R.id.btn15:
+            /**
+             * 传感器相关
+             */
+            startActivity(new Intent(this, SenSorActivity.class));
             break;
         default:
             break;

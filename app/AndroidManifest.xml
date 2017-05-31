@@ -18,40 +18,70 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SenSorActivity" />
+        <activity
+            android:name="com.test.activity.SensorListActivity"
+            android:label="传感器列表小例子" />
+        <activity
+            android:name="com.test.activity.LightSensorActivity"
+            android:label="光传感器监听小例子" />
+        <activity
+            android:name="com.test.activity.ProximitySensorActivity"
+            android:label="近距离传感器小例子" />
+        <activity
+            android:name="com.test.activity.GyroscopeSensorActivity"
+            android:label="陀螺仪传感器小例子" />
+        <activity
+            android:name="com.test.activity.AccelerometerSensorActivity"
+            android:label="加速测量仪小例子" />
+        <activity
+            android:name="com.test.activity.GravityActivity"
+            android:label="重力小例子" />
+        <activity
+            android:name="com.test.activity.MagneticFieldSensorActivity"
+            android:label="磁场传感器" />
+        <activity
+            android:name="com.test.activity.VirtualJax"
+            android:label="方位测量" />
     </application>
 
     <!-- 蓝牙信息获取权限 -->
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- wifi信息获取 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- 位置采集 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- 5.0以上获取活跃进程-->
-    <uses-permission xmlns:tools="http://schemas.android.com/tools"
-                     android:name="android.permission.PACKAGE_USAGE_STATS"
-                     tools:ignore="ProtectedPermissions"/>
+    <!-- 5.0以上获取活跃进程 -->
+    <uses-permission
+        xmlns:tools="http://schemas.android.com/tools"
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <!-- 相机权限 -->
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
-    <!--<uses-feature android:name="android.hardware.camera" />-->
-    <!--<uses-feature android:name="android.hardware.camera.autofocus" />-->
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <!--<uses-permission android:name="android.permission.FLASHLIGHT" />-->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- <uses-feature android:name="android.hardware.camera" /> -->
+    <!-- <uses-feature android:name="android.hardware.camera.autofocus" /> -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- <uses-permission android:name="android.permission.FLASHLIGHT" /> -->
 
 
-    <!-- NFC-->
-    <uses-permission android:name="android.permission.NFC"/>
-    <uses-permission android:name="android.permission.ACTION_NFCSHARING_SETTINGS"/>
-    <uses-feature  android:name="android.hardware.nfc"  android:required="true" />
+    <!-- NFC -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.ACTION_NFCSHARING_SETTINGS" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
+
 </manifest>

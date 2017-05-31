@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="false">
+    android:fillViewport="false" >
 
     <RelativeLayout
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="21dp"
+            android:layout_toLeftOf="@+id/btn3"
+            android:layout_toStartOf="@+id/btn3"
+            android:text="点击按钮后展示结果" />
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/textView"
+            android:layout_marginTop="24dp"
+            android:onClick="onClick"
+            android:text="电源信息" />
 
         <Button
             android:id="@+id/btn2"
@@ -32,15 +52,15 @@
             android:text="sim/手机状态" />
 
         <Button
-            android:id="@+id/btn1"
+            android:id="@+id/btn4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView"
-            android:layout_marginTop="24dp"
+            android:layout_below="@+id/btn1"
+            android:layout_marginTop="29dp"
             android:onClick="onClick"
-            android:text="电源信息" />
+            android:text="位置信息" />
 
         <Button
             android:id="@+id/btn5"
@@ -60,27 +80,6 @@
             android:layout_alignTop="@+id/btn5"
             android:onClick="onClick"
             android:text="运行进程" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="21dp"
-            android:layout_toLeftOf="@+id/btn3"
-            android:layout_toStartOf="@+id/btn3"
-            android:text="点击按钮后展示结果" />
-
-        <Button
-            android:id="@+id/btn4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn1"
-            android:layout_marginTop="29dp"
-            android:onClick="onClick"
-            android:text="位置信息" />
 
         <Button
             android:id="@+id/btn7"
@@ -170,7 +169,7 @@
             android:layout_alignStart="@+id/btn12"
             android:layout_alignTop="@+id/btn14"
             android:onClick="onClick"
-            android:text="A" />
+            android:text="传感器相关" />
 
         <Button
             android:id="@+id/btn16"
@@ -182,7 +181,6 @@
             android:layout_marginTop="29dp"
             android:onClick="onClick"
             android:text="B" />
-
 
         <Button
             android:id="@+id/btn17"
@@ -203,4 +201,5 @@
             android:onClick="onClick"
             android:text="D" />
     </RelativeLayout>
+
 </ScrollView>

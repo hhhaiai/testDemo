@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    <Button android:id="@+id/update" android:text="更新"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:onClick="doUpdate"/>
+	<ToggleButton android:id="@+id/toggle"
+	    android:layout_width="wrap_content" android:layout_height="wrap_content"
+	    android:textOn="坐标轴适配" android:textOff="坐标轴固定"
+	    android:onClick="doToggle"
+	    android:layout_alignTop="@id/update"
+	    android:layout_toRightOf="@id/update"/>
+    <Button android:id="@+id/geo" android:text="地理方位"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:onClick="doGeoNorth"
+        android:layout_alignTop="@id/update"
+        android:layout_toRightOf="@id/toggle"/>
+    
+	<TextView android:id="@+id/preferred" android:textSize="20sp"
+	    android:layout_width="wrap_content" android:layout_height="wrap_content"
+	    android:layout_below="@id/update"/>
+	
+	<TextView android:id="@+id/orientation" android:textSize="20sp"
+	    android:layout_width="wrap_content" android:layout_height="wrap_content"
+	    android:layout_below="@id/preferred"/>
+</RelativeLayout>

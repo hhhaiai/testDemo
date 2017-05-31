@@ -16,3 +16,7 @@ release
 *.ipr
 *.idea/
 __MACOSX
+
+
+*bin/
+gen/
