@@ -18,5 +18,9 @@ release
 __MACOSX
 
 
-*bin/
+bin/
 gen/
+.settings/
+app/bin/
+app/gen/
+appcompat/bin/
