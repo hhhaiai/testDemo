@@ -86,7 +86,7 @@ public class CTelephoneInfo {
     }
 
     public void setCTelephoneInfo(Context context) {
-        if (AppUtils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(context, Manifest.permission.READ_PHONE_STATE)) {
             TelephonyManager telephonyManager = ((TelephonyManager) mContext
                     .getSystemService(Context.TELEPHONY_SERVICE));
             CTelephoneInfo.imeiSIM1 = telephonyManager.getDeviceId();

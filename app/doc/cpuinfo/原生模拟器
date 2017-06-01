@@ -1,0 +1,44 @@
+processor	: 0
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 31
+model name	: Virtual CPU
+stepping	: 1
+cpu MHz		: 3292.347
+cache size	: 1024 KB
+fdiv_bug	: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 4
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov clflush mmx fxsr sse sse2 ss ht syscall lm constant_tsc pni ssse3 cx16 sse4_1 sse4_2 movbe popcnt
+bogomips	: 6584.69
+clflush size	: 32
+cache_alignment	: 32
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+
+processor	: 1
+vendor_id	: GenuineIntel
+cpu family	: 6
+model		: 31
+model name	: Virtual CPU 
+stepping	: 1
+cpu MHz		: 3292.347
+cache size	: 1024 KB
+fdiv_bug	: no
+f00f_bug	: no
+coma_bug	: no
+fpu		: yes
+fpu_exception	: yes
+cpuid level	: 4
+wp		: yes
+flags		: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov clflush mmx fxsr sse sse2 ss ht syscall lm constant_tsc pni ssse3 cx16 sse4_1 sse4_2 movbe popcnt
+bogomips	: 6584.69
+clflush size	: 32
+cache_alignment	: 32
+address sizes	: 39 bits physical, 48 bits virtual
+power management:
+

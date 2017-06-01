@@ -180,7 +180,7 @@
             android:layout_below="@+id/btn13"
             android:layout_marginTop="29dp"
             android:onClick="onClick"
-            android:text="B" />
+            android:text="cpu参数分析" />
 
         <Button
             android:id="@+id/btn17"

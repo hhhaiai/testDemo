@@ -15,11 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import com.test.utils.AppUtils;
-import com.test.utils.CTelephoneInfo;
-import com.test.utils.QueuedWork;
-import com.test.utils.SafeRunnable;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -71,6 +66,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.test.utils.CTelephoneInfo;
+import com.test.utils.EmulatorChecker;
+import com.test.utils.Utils;
+
 public class MainActivity extends AppCompatActivity {
     public static final String T = "sanbo";
 
@@ -78,6 +77,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     public void onClick(View v) {
@@ -174,6 +178,13 @@ public class MainActivity extends AppCompatActivity {
              * 传感器相关
              */
             startActivity(new Intent(this, SenSorActivity.class));
+
+            break;
+        case R.id.btn16:
+            /**
+             * CPUinfo判断
+             */
+            getCPUinfo();
             break;
         default:
             break;
@@ -185,16 +196,34 @@ public class MainActivity extends AppCompatActivity {
      * ************************************* 模拟器识别
      * ***********************************
      **************************************************************************************/
+    private void getCPUinfo() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    String s = EmulatorChecker.checkEmulatorByCpuInfo();
+                    showMessage(s);
+                } catch (Throwable e) {
+                }
+            }
+        }).start();
+    }
 
     /**
-     * 模拟器识别,SDK识别要点: 1.厂商判断是否为Vbox(window
-     * 部分QT写的可能是比较特殊,待进一步确定)对应字段:ro.product.manufacturer
+     * <pre>
+     * 模拟器识别,SDK识别要点: 
+     * 1.厂商判断是否为Vbox(window 部分QT写的可能是比较特殊,待进一步确定)对应字段:ro.product.manufacturer
      * 2.判断是否为x86机型.(需要服务端维护设备表对应,eg:三星notex,肯定不是x86的) 对应字段:ro.product.cpu.abi
-     * 3.查看有线还是无线 4.adb状态
-     * ro.secure设为0，persist.service.adb.enable设为1,adbd就以为root权限运行了.还有说法ro.adb.secure=0就可以随便玩了
-     * 5.关键字判断模拟器.microvirtd是逍遥模拟器/genyd是genymotion模拟器 gps逍遥模拟器
-     * ro.microvirtd.caps.gps=on ? genymition模拟器 ro.genyd.caps.gps=on? 天天模拟器
-     * ro.ttvmd.caps.gps=on
+     * 3.查看有线还是无线 
+     * 4.adb状态 ro.secure设为0，persist.service.adb.enable设为1,adbd就以为root权限运行了.还有说法ro.adb.secure=0就可以随便玩了
+     * 5.关键字判断模拟器.
+     *      microvirtd是逍遥模拟器
+     *      genyd是genymotion模拟器 
+     *      gps逍遥模拟器 ro.microvirtd.caps.gps=on ? 
+     *      genymition模拟器 ro.genyd.caps.gps=on? 
+     *      天天模拟器 ro.ttvmd.caps.gps=on
+     * </pre>
      */
     private void getEmuInfo() {
         try {
@@ -352,9 +381,8 @@ public class MainActivity extends AppCompatActivity {
      **************************************************************************************/
     /**
      * 获取NFC信息. 需要权限:<uses-permission android:name="android.permission.NFC"/>
-     * 限制最低版本:14
-     * 限制安装硬件,要求当前设备必须要有NFC芯片:<uses-feature android:name="android.hardware.nfc"
-     * android:required="true" />
+     * 限制最低版本:14 限制安装硬件,要求当前设备必须要有NFC芯片:<uses-feature
+     * android:name="android.hardware.nfc" android:required="true" />
      */
     private void getNFCInfo() {
         sb = new StringBuilder();
@@ -451,7 +479,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 获取系统的build.prop文件内容
-     *
+     * 
      * @return
      */
 
@@ -519,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 获取序列号.2.3以上版本支持
-     *
+     * 
      * @return
      */
     @TargetApi(9)
@@ -533,14 +561,14 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 通过系统api获取mac地址.
-     *
+     * 
      * @param context
      * @return
      */
     private static String getMacBySystemInterface(Context context) {
         try {
             WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (AppUtils.checkPermission(context, Manifest.permission.ACCESS_WIFI_STATE)) {
+            if (Utils.checkPermission(context, Manifest.permission.ACCESS_WIFI_STATE)) {
                 WifiInfo info = wifi.getConnectionInfo();
                 return info.getMacAddress();
             } else {
@@ -552,10 +580,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 通过读取文件,获取设备mac信息
-     * </p>
-     * 不需要权限
-     *
+     * 通过读取文件,获取设备mac信息 </p> 不需要权限
+     * 
      * @return
      */
     private static String getMacShell() {
@@ -723,8 +749,8 @@ public class MainActivity extends AppCompatActivity {
     private void getCameraInfo() {
         try {
             if (Build.VERSION.SDK_INT > 22) {
-                ActivityCompat.requestPermissions(this,
-                        new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1);
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE }, 1);
             }
             StringBuilder sb = new StringBuilder();
             int num = Camera.getNumberOfCameras();
@@ -823,17 +849,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 1. 此方法只在android5.0以上有效 2.
-     * AndroidManifest中加入此权限<uses-permission xmlns:tools=
-     * "http://schemas.android.com/tools" android:name=
+     * 1. 此方法只在android5.0以上有效 2. AndroidManifest中加入此权限<uses-permission
+     * xmlns:tools= "http://schemas.android.com/tools" android:name=
      * "android.permission.PACKAGE_USAGE_STATS" tools:ignore=
      * "ProtectedPermissions" /> 3. 打开手机设置，点击安全-高级，在有权查看使用情况的应用中，为这个App打上勾
      */
     @TargetApi(21)
     private void getRunProcessLargeThen5BySystemAPI() {
         long ts = System.currentTimeMillis();
-        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getApplicationContext()
-                .getSystemService(Context.USAGE_STATS_SERVICE);
+        UsageStatsManager mUsageStatsManager = (UsageStatsManager) getApplicationContext().getSystemService(
+                Context.USAGE_STATS_SERVICE);
         List<UsageStats> usageStats = mUsageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_BEST,
                 ts - 1000 * 10, ts);
         if (usageStats == null || usageStats.size() == 0) {
@@ -866,7 +891,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 判断是否有用权限
-     *
+     * 
      * @param context
      *            上下文参数
      */
@@ -921,24 +946,6 @@ public class MainActivity extends AppCompatActivity {
             sb.append("\n").append(ra.processName);
         }
         showMessage(sb.toString());
-    }
-
-    /**
-     * 这种方法不好用
-     */
-    private void getRunProcessByRuntime() {
-        for (int i = 0; i < 10000; i++) {
-            QueuedWork.execute(new SafeRunnable() {
-                public void safeRun() {
-                    try {
-                        Thread.sleep(2 * 1000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    runPS();
-                }
-            });
-        }
     }
 
     private void runPS() {
@@ -996,8 +1003,8 @@ public class MainActivity extends AppCompatActivity {
             String appName = packageInfo.applicationInfo.loadLabel(pm).toString();
             String packageName = packageInfo.packageName;
             // 给一同程序设置包名
-            sb.append("\n").append("=====>>>").append(appName.trim()).append("<<<=====\n").append("PackageName:  " + "")
-                    .append(packageName).append("\n");
+            sb.append("\n").append("=====>>>").append(appName.trim()).append("<<<=====\n")
+                    .append("PackageName:  " + "").append(packageName).append("\n");
         }
         String result = sb.toString().trim();
         if (TextUtils.isEmpty(result)) {
@@ -1027,7 +1034,8 @@ public class MainActivity extends AppCompatActivity {
          * 第三、WiFi定位 每一个无线AP（路由器）都有一个全球唯一的MAC地址，并且一般来说无线AP在一段时间内不会移动；
          * 设备在开启Wi-Fi的情况下，无线路由器默认都会进行SSID广播（除非用户手动配置关闭该功能），
          * 在广播帧包含了该路由器的MAC地址；采集装置可以通过接收周围AP发送的广播信息获取周围AP的MAC信息和信号强度信息，
-         * 将这些信息上传到服务器，经过服务器的计算，保存为“MAC-经纬度”的映射，当采集的信息足够多时候就在服务器上建立了一张巨大的WiFi信息网络；
+         * 将这些信息上传到服务器
+         * ，经过服务器的计算，保存为“MAC-经纬度”的映射，当采集的信息足够多时候就在服务器上建立了一张巨大的WiFi信息网络；
          * 当一个设备处在这样的网络中时，可以将收集到的这些能够标示AP的数据发送到位置服务器，服务器检索出每一个AP的地理位置，
          * 并结合每个信号的强弱程度，计算出设备的地理位置并返回到用户设备，其计算方式和基站定位位置计算方式相似，
          * 也是利用三点定位或多点定位技术；位置服务商要不断更新、补充自己的数据库，以保证数据的准确性。
@@ -1057,11 +1065,10 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * 当前设备位置。 需要权限 <uses-permission android:name=
-         * "android.permission.ACCESS_COARSE_LOCATION" />
-         * <uses-permission android:name=
-         * "android.permission.ACCESS_FINE_LOCATION" />
+         * "android.permission.ACCESS_COARSE_LOCATION" /> <uses-permission
+         * android:name= "android.permission.ACCESS_FINE_LOCATION" />
          */
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             CellLocation c = tm.getCellLocation();
             sb.append("设备的当前位置: ").append(String.valueOf(c)).append("\n");
         }
@@ -1090,7 +1097,7 @@ public class MainActivity extends AppCompatActivity {
          * 设备的邻居单元信息。需要权限 貌似新版本不好用 <uses-permission android:name=
          * "android.permission.ACCESS_COARSE_UPDATES" />
          */
-        if (AppUtils.checkPermission(this, "android.permission.ACCESS_COARSE_LOCATION")) {
+        if (Utils.checkPermission(this, "android.permission.ACCESS_COARSE_LOCATION")) {
             Log.e(T, "申请了权限");
             List<NeighboringCellInfo> ncs = tm.getNeighboringCellInfo();
             Log.e(T, "附近设备单元信息－－－》" + ncs.size());
@@ -1105,7 +1112,7 @@ public class MainActivity extends AppCompatActivity {
          * "android.permission.ACCESS_COARSE_LOCATION" />
          */
         if (Build.VERSION.SDK_INT > 16) {
-            if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 List<CellInfo> cis = tm.getAllCellInfo();
                 if (cis != null) {
                     sb.append("--------------主小区和附近小区信息[").append(cis.size()).append("]--------------\n")
@@ -1114,7 +1121,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
 
             tm.listen(new PhoneStateListener() {
                 @Override
@@ -1147,11 +1154,10 @@ public class MainActivity extends AppCompatActivity {
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         /**
          * 获取扫描到的wifi列表 需要权限 <uses-permission android:name=
-         * "android.permission.ACCESS_COARSE_LOCATION" />
-         * <uses-permission android:name=
-         * "android.permission.ACCESS_FINE_LOCATION" />
+         * "android.permission.ACCESS_COARSE_LOCATION" /> <uses-permission
+         * android:name= "android.permission.ACCESS_FINE_LOCATION" />
          */
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             List<ScanResult> srs = wm.getScanResults();
             sb.append("wifi列表：").append(srs.toString()).append("\n");
         }
@@ -1196,7 +1202,7 @@ public class MainActivity extends AppCompatActivity {
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
-            if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
+            if (Utils.checkPermission(this, Manifest.permission.ACCESS_NETWORK_STATE)) {
                 NetworkInfo ni = cm.getActiveNetworkInfo();
                 sb.append("网络连接类型:").append(ni.getTypeName()).append("\n");
                 sb.append("是否网络连接中:").append(ni.isConnectedOrConnecting()).append("\n");
@@ -1214,7 +1220,7 @@ public class MainActivity extends AppCompatActivity {
          */
         sb.append("=============GPS定位信息=========").append("\n");
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             // 检索有关GPS引擎当前状态的信息。
             GpsStatus gs = lm.getGpsStatus(null);
             sb.append("GPS引擎当前状态:").append(gs.toString()).append("\n");
@@ -1222,7 +1228,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * 最后位置
          */
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             try {
                 Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (location != null) {
@@ -1241,7 +1247,7 @@ public class MainActivity extends AppCompatActivity {
         List<String> ss = lm.getProviders(true);
         sb.append("附近名称列表:").append(ss.toString()).append("\n");
         // lm.getBestProvider(Criteria.ACCURACY_HIGH,false);
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             lm.addGpsStatusListener(new GpsStatus.Listener() {
                 @Override
                 public void onGpsStatusChanged(int event) {
@@ -1304,7 +1310,7 @@ public class MainActivity extends AppCompatActivity {
         String simOperatorName = tm.getSimOperatorName();
         String simSerialNumber = "unknow";
         // SIM卡序列号,需要权限android.Manifest.permission.READ_PHONE_STATE
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             simSerialNumber = tm.getSimSerialNumber();
         }
         // 订阅ID.
@@ -1318,7 +1324,7 @@ public class MainActivity extends AppCompatActivity {
          * 在同一个国家内,如果有多个CDMA运营商,可以通过MNC来进行区别.
          */
         String subscriberId = "unknow";
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             subscriberId = tm.getSubscriberId();
         }
         int mcc = getResources().getConfiguration().mcc;
@@ -1344,39 +1350,38 @@ public class MainActivity extends AppCompatActivity {
             break;
         }
         /**
-         * 电话方位 需要权限 android.permission.ACCESS_COARSE_LOCATION
-         * </p>
-         * 请求位置更新，如果更新将产生广播，接收对象为注册LISTEN_CELL_LOCATION的对象，需要的permission名称为ACCESS_COARSE_LOCATION。
-         * </p>
+         * 电话方位 需要权限 android.permission.ACCESS_COARSE_LOCATION </p>
+         * 请求位置更新，如果更新将产生广播，接收对象为注册LISTEN_CELL_LOCATION的对象，
+         * 需要的permission名称为ACCESS_COARSE_LOCATION。 </p>
          * location.requestLocationUpdate();
          */
 
         String cellLoc = "获取失败";
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             CellLocation loc = tm.getCellLocation();
             if (loc != null)
                 cellLoc = loc.toString();
         }
         // device id
         String imei = "unknow";
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             imei = tm.getDeviceId();
         }
         // 设备软件版本号
         String softwareVersion = "unknow";
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             softwareVersion = tm.getDeviceSoftwareVersion();
         }
         // 手机号获取
         String lineNum = "unknow";
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             lineNum = tm.getLine1Number();
         }
         /**
          * 当前移动终端附近移动终端的信息 需要权限android.permission.ACCESS_COARSE_LOCATION
          */
         StringBuilder sb = new StringBuilder();
-        if (AppUtils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+        if (Utils.checkPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
             try {
                 List<NeighboringCellInfo> infos = tm.getNeighboringCellInfo();
                 for (NeighboringCellInfo info : infos) {
@@ -1481,14 +1486,14 @@ public class MainActivity extends AppCompatActivity {
         }
         // 语音邮件号码
         String VoiceMailNumber = "unknow";
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             VoiceMailNumber = tm.getVoiceMailNumber();
         }
         // ICC卡是否存在
         boolean hasIccCard = tm.hasIccCard();
         // 是否漫游
         boolean isNetworkRoaming = false;
-        if (AppUtils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
+        if (Utils.checkPermission(this, Manifest.permission.READ_PHONE_STATE)) {
             isNetworkRoaming = tm.isNetworkRoaming();
         }
 
@@ -1533,9 +1538,11 @@ public class MainActivity extends AppCompatActivity {
         }
         String s = "================SIM卡相关信息==================" + "\nSIM状态:" + simState + "\nSIM国家码:" + simCountryIso
                 + "\nSIM[mcc+mnc]:" + operator + "\n服务提供名字(SPN):" + simOperatorName + "\nSIM卡序列号(ICCID):"
-                + simSerialNumber + "\nIMSI:" + subscriberId + "\nMCC[resources获取]:" + mcc + "\nMNC[resources获取]:" + mnc
-                + "\n================手机其他信息===================" + "\n电话状态:" + callState + "\n电话方位:" + cellLoc
-                + "\nIMEI:" + imei + "\n设备软件版本号:" + softwareVersion + "\n手机号:" + lineNum
+                + simSerialNumber + "\nIMSI:" + subscriberId + "\nMCC[resources获取]:" + mcc + "\nMNC[resources获取]:"
+                + mnc + "\n================手机其他信息===================" + "\n电话状态:" + callState + "\n电话方位:" + cellLoc
+                + "\nIMEI:" + imei + "\n设备软件版本号:" + softwareVersion
+                + "\n手机号:"
+                + lineNum
                 // + "\n附近电话信息:" + sb.toString()
                 + "\n注册的ISO国家注册码:" + networkCountryIso + "\nnetworkOperator(MCC+MNC):" + networkOperator
                 + "\n(当前已注册的用户)的名字:" + networkOperatorName + "\n当前使用的网络类型:" + networkType + "\n手机类型:" + phoneType
@@ -1598,9 +1605,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         /**
-         * 需要权限
-         * <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"
-         * />
+         * 需要权限 <uses-permission
+         * android:name="android.permission.ACCESS_WIFI_STATE" />
          */
         WifiManager mWifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = mWifi.getConnectionInfo();
@@ -1650,7 +1656,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * 获取系统MAC地址.需要权限<uses-permission android:name="android.permission.INTERNET"
      * />
-     *
+     * 
      * @return
      */
     @TargetApi(9)
@@ -1702,7 +1708,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 根据频率获得信道
-     *
+     * 
      * @param frequency
      * @return
      */
@@ -1857,8 +1863,8 @@ public class MainActivity extends AppCompatActivity {
                 String s = "状态:" + statusString + "\n" + "健康:" + healthString + "\n" + "是否存在电池:"
                         + String.valueOf(present) + "\n" + "获得当前电量:" + String.valueOf(level) + "\n" + "获得总电量:"
                         + String.valueOf(scale) + "\n" + "图标ID:" + String.valueOf(icon_small) + "\n" + "连接的电源插座:"
-                        + acString + "\n" + "电压:" + String.valueOf(voltage) + "\n" + "温度:" + String.valueOf(temperature)
-                        + "\n" + "电池类型:" + technology + "\n";
+                        + acString + "\n" + "电压:" + String.valueOf(voltage) + "\n" + "温度:"
+                        + String.valueOf(temperature) + "\n" + "电池类型:" + technology + "\n";
                 showMessage(s);
             }
         }
@@ -1882,7 +1888,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * 告诉UI需要展示信息
-     *
+     * 
      * @param s
      */
     private void showMessage(String s) {
