@@ -186,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
              */
             getCPUinfo();
             break;
+        case R.id.btn17:
+            getKeyword();
+            break;
         default:
             break;
         }
@@ -196,6 +199,22 @@ public class MainActivity extends AppCompatActivity {
      * ************************************* 模拟器识别
      * ***********************************
      **************************************************************************************/
+
+    private void getKeyword() {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("=============================").append("\n").append("============").append("关键字识别")
+                .append("=============").append("\n").append("=============================").append("\n")
+
+                .append("是否使用monkey:").append(Utils.isUserAMonkey()).append("\n").append("是否添加调试器:")
+                .append(Utils.isBeingDebugged()).append("\n").append("核心字段判断:").append("\n")
+                .append(EmulatorChecker.hasQEmuProps(this));
+        showMessage(sb.toString());
+    }
+
+    /**
+     * CPUinfo解析
+     */
     private void getCPUinfo() {
         new Thread(new Runnable() {
 

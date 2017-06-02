@@ -1,19 +1,28 @@
 package com.test.utils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Properties;
+
+import android.app.ActivityManager;
 import android.app.Application;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Debug;
+import android.os.Environment;
 import android.util.Log;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.List;
-
 /**
- * Copyright © 2017 Umeng Inc. All rights reserved. Description: TODO Version:
- * 1.0 Create: 17/2/14 11:14 Author: sanbo
+ * @Copyright © 2017 sanbo Inc. All rights reserved.
+ * @Description: TODO
+ * @Version: 1.0
+ * @Create: 2017-6-1 下午7:17:09
+ * @Author: sanbo
  */
 public class Utils {
 
@@ -123,11 +132,43 @@ public class Utils {
             params[0] = new String(property);
 
             return (String) get.invoke(systemProperties, params);
-        } catch (IllegalArgumentException iAE) {
-            throw iAE;
-        } catch (Exception exception) {
-            throw null;
+        } catch (Exception iAE) {
+            return null;
         }
+    }
+
+    /**
+     * 通过/system/build.prop获取对应对
+     * 
+     * @param propertyKey
+     * @return
+     */
+    public static String getBuildProp(String propertyKey) {
+        Properties pts = getBuildProp();
+        if (pts.size() > 0) {
+            return pts.getProperty(propertyKey);
+        } else {
+            return null;
+        }
+    }
+
+    private static Properties getBuildProp() {
+        Properties prop = new Properties();
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(new File(Environment.getRootDirectory(), "build.prop"));
+            prop.load(fis);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (Throwable e) {
+                }
+            }
+        }
+        return prop;
     }
 
     public static boolean isPackageInstalled(Context context, String packageName) {
@@ -138,8 +179,26 @@ public class Utils {
             packageManager.getInstallerPackageName(packageName);
             return true;
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
             return false;
         }
     }
+
+    /**
+     * Check if the normal method of "isUserAMonkey" returns a quick win of who
+     * the user is.
+     * 
+     * @return {@code true} if the user is a monkey or {@code false} if not.
+     */
+    public static boolean isUserAMonkey() {
+        return ActivityManager.isUserAMonkey();
+    }
+
+    /**
+     * 
+     * Believe it or not, there are packers that use this...
+     */
+    public static boolean isBeingDebugged() {
+        return Debug.isDebuggerConnected();
+    }
+
 }

@@ -189,7 +189,7 @@
             android:layout_alignBottom="@+id/btn16"
             android:layout_centerHorizontal="true"
             android:onClick="onClick"
-            android:text="C" />
+            android:text="关键字判断" />
 
         <Button
             android:id="@+id/btn18"
